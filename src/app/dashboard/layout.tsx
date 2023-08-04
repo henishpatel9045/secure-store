@@ -22,7 +22,6 @@ export default function DashboardLayout({
   });
 
   if (status === "loading") return <Loading />;
-  console.log(session);
 
   return (
     <div className="flex flex-col items-start w-full h-full">

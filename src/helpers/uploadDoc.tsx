@@ -1,11 +1,11 @@
 "use server";
 import { prisma } from "@/db";
-import { writeFile, mkdirSync, existsSync, rmSync } from "fs";
+import { writeFile, mkdirSync, existsSync, rmSync, rm } from "fs";
 import { redirect } from "next/navigation";
 import { Session } from "next-auth";
 
 const dirCheck = (accountId: string) => {
-  const uploadFolderPath = "./uploads";
+  const uploadFolderPath = "./public/uploads";
   if (!existsSync(uploadFolderPath)) {
     mkdirSync(uploadFolderPath);
     console.log(`Created ${uploadFolderPath} folder.`);
@@ -36,29 +36,29 @@ const fileToBuffer = async (file: File) => {
   return Buffer.from(await file.arrayBuffer());
 };
 
-const saveDoc = async (formData: FormData, session: Session | null) => {
-  const docName = formData.get("name") as string;
-  const description = formData.get("description") as string;
-  const file = formData.get("doc") as File;
-  console.log(session);
-
+const storeFile = async (
+  file: File,
+  session: Session | null,
+  doc: {
+    id: string;
+    userEmail: string;
+    name: string;
+    fileName: string;
+    description: string | null;
+    fileType: string;
+    size: bigint;
+    path: string | null;
+    createdAt: Date;
+    updatedAt: Date;
+  }
+) => {
   if (!(session && session.user?.email)) {
     throw new Error("User is not logged in.");
   }
-  const doc = await prisma.doc.create({
-    data: {
-      name: docName,
-      description,
-      fileType: file.type,
-      size: file.size,
-      userEmail: session?.user?.email,
-    },
-  });
-
   const buffer = await fileToBuffer(file);
   dirCheck(session?.user?.email);
   let filePath: string =
-    "./uploads/" + session.user.email + "/doc/" + doc.id + file.name;
+    "./public/uploads/" + session.user.email + "/doc/" + doc.id + file.name;
 
   try {
     writeFile(filePath, buffer, (err) => {});
@@ -67,7 +67,8 @@ const saveDoc = async (formData: FormData, session: Session | null) => {
         id: doc.id,
       },
       data: {
-        path: filePath,
+        fileName: file.name,
+        path: filePath.replace("./public", ""),
       },
     });
   } catch (error) {
@@ -80,7 +81,70 @@ const saveDoc = async (formData: FormData, session: Session | null) => {
     rmSync(filePath);
     throw error;
   }
+};
+
+const saveDoc = async (formData: FormData, session: Session | null) => {
+  const docName = formData.get("name") as string;
+  const description = formData.get("description") as string;
+  const file = formData.get("doc") as File;
+
+  if (!(session && session.user?.email)) {
+    throw new Error("User is not logged in.");
+  }
+  const doc = await prisma.doc.create({
+    data: {
+      name: docName,
+      fileName: file.name,
+      description,
+      fileType: file.type,
+      size: file.size,
+      userEmail: session?.user?.email,
+    },
+  });
+
+  await storeFile(file, session, doc);
   redirect("/dashboard/doc");
 };
 
-export { saveDoc };
+const updateDoc = async (formData: FormData, session: Session | null) => {
+  const docName = formData.get("name") as string;
+  const docId = formData.get("docId") as string;
+  const description = formData.get("description") as string;
+  const file = formData.get("doc") as File | undefined;
+
+  if (!(session && session.user?.email)) {
+    throw new Error("User is not logged in.");
+  }
+
+  let prevDoc = await prisma.doc.findFirst({
+    where: {
+      id: docId,
+    },
+  });
+  console.log("PrevDoc: ", prevDoc);
+  console.log("File: ", file);
+
+  const doc = await prisma.doc.update({
+    where: {
+      id: docId,
+    },
+    data: {
+      name: docName,
+      fileName: file?.size ? file.name : prevDoc?.fileName,
+      description,
+      fileType: file?.size ? file.type : prevDoc?.fileType,
+      size: file?.size ? file.size : prevDoc?.size,
+      userEmail: session?.user?.email,
+    },
+  });
+  console.log("doc: ", doc);
+
+  if (file?.size) {
+    rm(prevDoc?.path ?? "", (err) => {
+      console.log("Error deleting current file: ", err);
+    });
+    await storeFile(file, session, doc);
+  }
+};
+
+export { saveDoc, updateDoc };

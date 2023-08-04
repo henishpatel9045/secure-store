@@ -27,6 +27,7 @@ model Doc {
   user         User           @relation(fields: [userEmail], references: [email], onDelete: Cascade)
   userEmail    String
   name         String
+  fileName     String         @default("")
   description  String?
   fileType     String
   size         BigInt         @default(0)
@@ -41,6 +42,7 @@ model EncryptedDoc {
   user        User     @relation(fields: [userEmail], references: [email], onDelete: Cascade)
   userEmail   String
   name        String
+  fileName    String
   description String?
   fileType    String
   size        BigInt   @default(0)
