@@ -129,8 +129,8 @@ export default function DocForm({
           </div>
         </div>
         <div
-          className={`w-full self-center grid grid-cols-${
-            isEdit ? "3" : "2"
+          className={`w-full self-center grid ${
+            isEdit ? "grid-cols-3" : "grid-cols-2"
           } gap-4 mt-20`}
         >
           <button

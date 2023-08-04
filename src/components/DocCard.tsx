@@ -16,7 +16,7 @@ export default function DocCard({
   path: string;
 }): React.JSX.Element {
   return (
-    <div className="card card-compact w-full bg-base-100 shadow-xl overflow-hidden">
+    <div className="card card-compact w-full bg-base-100 shadow-xl overflow-hidden h-fit">
       {/* <figure> */}
       <img
         className="object-fill w-full hover:opacity-80 hover:transition-all transition-all hover:cursor-pointer active:scale-90"
