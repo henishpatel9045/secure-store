@@ -1,0 +1,59 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int            @id @default(autoincrement())
+  email        String         @unique
+  password     String?
+  googleId     String         @unique
+  name         String?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  Doc          Doc[]
+  EncryptedDoc EncryptedDoc[]
+}
+
+model Doc {
+  id           String         @id @default(uuid())
+  user         User           @relation(fields: [userEmail], references: [email], onDelete: Cascade)
+  userEmail    String
+  name         String
+  description  String?
+  fileType     String
+  size         BigInt         @default(0)
+  path         String?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  SharableDocs SharableDocs[]
+}
+
+model EncryptedDoc {
+  id          String   @id @default(uuid())
+  user        User     @relation(fields: [userEmail], references: [email], onDelete: Cascade)
+  userEmail   String
+  name        String
+  description String?
+  fileType    String
+  size        BigInt   @default(0)
+  path        String
+  passKey     String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model SharableDocs {
+  id       String   @id @default(uuid())
+  doc      Doc      @relation(fields: [docId], references: [id], onDelete: Cascade)
+  docId    String
+  accessed Int
+  expireAt DateTime
+}
