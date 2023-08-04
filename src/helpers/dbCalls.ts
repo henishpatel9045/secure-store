@@ -1,6 +1,7 @@
 "use server";
 
 import { prisma } from "@/db";
+import { rmSync } from "fs";
 
 const getDocsData = async (email: string) => {
   const docsData = await prisma.doc.findMany({
@@ -37,4 +38,18 @@ const getDocData = async (email: string) => {
   return docsData;
 };
 
-export { getDocsData, getDocData };
+const deleteDoc = async (id: string) => {
+  const doc = await prisma.doc.delete({
+    where: {
+      id,
+    },
+  });
+
+  try {
+    rmSync("./public" + doc.path ?? "");
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export { getDocsData, getDocData, deleteDoc };

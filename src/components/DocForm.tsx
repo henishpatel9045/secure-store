@@ -3,7 +3,8 @@
 import { saveDoc, updateDoc } from "@/helpers/uploadDoc";
 import { useSession } from "next-auth/react";
 import { ChangeEvent, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, redirect } from "next/navigation";
+import { deleteDoc } from "@/helpers/dbCalls";
 
 export default function DocForm({
   docData = { name: "", description: "", fileName: "" },
@@ -127,7 +128,11 @@ export default function DocForm({
             />
           </div>
         </div>
-        <div className="w-full self-center grid grid-cols-2 gap-4 mt-20">
+        <div
+          className={`w-full self-center grid grid-cols-${
+            isEdit ? "3" : "2"
+          } gap-4 mt-20`}
+        >
           <button
             type="submit"
             className="btn btn-info"
@@ -146,6 +151,25 @@ export default function DocForm({
           <button type="reset" className="btn btn-warning" disabled={loading}>
             Clear
           </button>
+          {isEdit && (
+            <button
+              className="btn btn-error text-white"
+              type="button"
+              disabled={loading}
+              onClick={async () => {
+                if (
+                  confirm(`Are you sure to delete the doc ${docData.name} ?`)
+                ) {
+                  try {
+                    await deleteDoc(docData._id ?? "");
+                  } catch (error) {}
+                  router.push("/dashboard/doc");
+                }
+              }}
+            >
+              DELETE
+            </button>
+          )}
         </div>
       </form>
     </div>
