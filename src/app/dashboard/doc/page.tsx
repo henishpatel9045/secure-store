@@ -8,7 +8,7 @@ import { generateShare, getDocsData } from "@/helpers/dbCalls";
 import { HiOutlineInformationCircle } from "react-icons/hi";
 import Timer from "@/components/Timer";
 
-export default function page() {
+export default function Page() {
   const { data: session, status } = useSession();
   const [docsData, setDocsData] = useState<
     {

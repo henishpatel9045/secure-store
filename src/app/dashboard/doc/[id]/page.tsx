@@ -1,7 +1,7 @@
 import DocForm from "@/components/DocForm";
 import { prisma } from "@/db";
 
-export default async function page({ params }: { params: { id: string } }) {
+export default async function Page({ params }: { params: { id: string } }) {
   const doc = await prisma.doc.findFirst({
     where: {
       id: params.id,

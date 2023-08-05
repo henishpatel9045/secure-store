@@ -1,7 +1,7 @@
 import DocCard from "@/components/DocCard";
 import Link from "next/link";
 
-export default function page() {
+export default function Page() {
   return (
     <div className="flex-1 relative flex flex-col w-full p-6">
       <Link

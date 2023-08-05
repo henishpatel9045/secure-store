@@ -1,5 +1,5 @@
 import DocForm from "@/components/DocForm";
 
-export default function page() {
+export default function Page() {
   return <DocForm />;
 }
