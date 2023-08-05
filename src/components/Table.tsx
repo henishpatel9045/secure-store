@@ -2,6 +2,8 @@
 
 import React, { useState } from "react";
 import Pagination from "./Pagination";
+import { deleteShareDoc } from "@/helpers/dbCalls";
+import { useRouter } from "next/navigation";
 
 export default function Table({
   page,
@@ -9,6 +11,7 @@ export default function Table({
   totalPages,
   title,
   tableData,
+  onDelete,
 }: {
   page: number;
   setPage: React.Dispatch<React.SetStateAction<number>>;
@@ -24,8 +27,10 @@ export default function Table({
       }[]
     | undefined
     | null;
+  onDelete: (id: string) => Promise<void>;
 }) {
   const [] = useState<number>(0);
+  const router = useRouter();
 
   return (
     <div className="table bg-base-100">
@@ -73,6 +78,15 @@ export default function Table({
                     <button
                       type="submit"
                       className="btn btn-error btn-sm text-base"
+                      onClick={async () => {
+                        if (
+                          confirm(
+                            `Are you sure to delete sharable link "/share/${item.id}" for doc ${item.docName}`
+                          )
+                        ) {
+                          await onDelete(item.id);
+                        }
+                      }}
                     >
                       DELETE
                     </button>

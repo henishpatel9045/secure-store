@@ -3,7 +3,8 @@
 import React, { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import Table from "./Table";
-import { getSharedDocData } from "@/helpers/dbCalls";
+import { deleteShareDoc, getSharedDocData } from "@/helpers/dbCalls";
+import { redirect, useRouter } from "next/navigation";
 
 export default function DocShareTable() {
   const [page, setPage] = useState<number>(0);
@@ -20,7 +21,6 @@ export default function DocShareTable() {
     | undefined
     | null
   >(null);
-
   const getData = async () => {
     if (status !== "authenticated") return;
 
@@ -33,6 +33,11 @@ export default function DocShareTable() {
     getData();
   }, [page]);
 
+  const deleteLink = async (id: string) => {
+    await deleteShareDoc(id);
+    window.location.reload(); // TODO Implement refresh of current page using next.js
+  };
+
   return totalPages ? (
     <Table
       title="Shared Document"
@@ -40,6 +45,7 @@ export default function DocShareTable() {
       setPage={setPage}
       totalPages={totalPages}
       tableData={tableData}
+      onDelete={deleteLink}
     />
   ) : (
     <div />

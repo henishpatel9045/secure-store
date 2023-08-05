@@ -3,6 +3,7 @@
 import { TABLE_PAGE_SIZE } from "@/config/site";
 import { prisma } from "@/db";
 import { rmSync } from "fs";
+import { redirect } from "next/navigation";
 
 const getDocsData = async (email: string) => {
   const docsData = await prisma.doc.findMany({
@@ -109,8 +110,6 @@ const getSharedDocData = async (email: string, page: number) => {
     },
   });
 
-  let count = 0;
-
   const shareData = data?.Doc.reduce(
     (prev, doc) => {
       let tempShareData = doc.SharableDocs.map((item, index) => {
@@ -138,6 +137,14 @@ const getSharedDocData = async (email: string, page: number) => {
     data: shareData?.slice(page * limit, (page + 1) * limit),
     totalPages: Math.ceil((shareData?.length ?? 0) / limit),
   };
+};
+
+const deleteShareDoc = async (id: string) => {
+  await prisma.sharableDocs.delete({
+    where: {
+      id,
+    },
+  });
 };
 
 const checkActiveDocShare = async (docId: string) => {
@@ -193,4 +200,5 @@ export {
   getSharedDocData,
   checkActiveDocShare,
   generateShare,
+  deleteShareDoc,
 };
