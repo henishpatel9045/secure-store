@@ -1,6 +1,9 @@
+"use client";
+
 import { HiOutlineDownload, HiShare } from "react-icons/hi";
 import { FiEdit } from "react-icons/fi";
 import Link from "next/link";
+import { checkActiveDocShare } from "@/helpers/dbCalls";
 
 export default function DocCard({
   id,
@@ -8,12 +11,25 @@ export default function DocCard({
   fileName,
   name,
   path,
+  setModelDocId,
+  setShareDocData,
+  setIsActive,
 }: {
   id: string;
   fileType: string;
   fileName: string;
   name: string;
   path: string;
+  setModelDocId: React.Dispatch<React.SetStateAction<string | null>>;
+  setShareDocData: React.Dispatch<
+    React.SetStateAction<{
+      id: string;
+      link: string;
+      expiredAt: number;
+      accessedFor: number;
+    } | null>
+  >;
+  setIsActive: React.Dispatch<React.SetStateAction<boolean>>;
 }): React.JSX.Element {
   return (
     <div className="card card-compact w-full bg-base-100 shadow-xl overflow-hidden h-fit">
@@ -34,10 +50,26 @@ export default function DocCard({
         </div>
         <div className="card-actions w-full">
           <div className="join grid grid-cols-3 w-full gap-2">
-            <button className="btn btn-neutral">
+            <a className="btn btn-neutral" href={path} download>
               <HiOutlineDownload size={25} />
-            </button>
-            <button className="btn btn-neutral">
+            </a>
+            <button
+              className="btn btn-neutral"
+              onClick={async () => {
+                setModelDocId(id);
+                let dialog: HTMLDialogElement | null = document.getElementById(
+                  "shareDoc"
+                ) as HTMLDialogElement | null;
+                let isActive = await checkActiveDocShare(id);
+                if (isActive.exists) {
+                  setIsActive(true);
+                  setShareDocData(isActive?.doc ?? null);
+                } else {
+                  setIsActive(false);
+                }
+                dialog?.showModal();
+              }}
+            >
               <HiShare size={25} />
             </button>
             <Link className="btn btn-neutral" href={"./doc/" + id}>

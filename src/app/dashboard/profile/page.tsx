@@ -7,6 +7,7 @@ import { IoDocumentLock, IoDocument } from "react-icons/io5";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { getUserData } from "@/helpers/dbCalls";
+import Timer from "@/components/Timer";
 
 const iconProps = {
   size: 40,

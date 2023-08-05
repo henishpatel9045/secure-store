@@ -19,78 +19,7 @@ export default function DocShareTable() {
       }[]
     | undefined
     | null
-  >([
-    {
-      id: "498-546",
-      docName: "Aadhar Card",
-      createdAt: Date.parse("05/09/2002 18:45").toString(),
-      expiredAt: Date.parse("05-09-2024"),
-      accessedFor: 50,
-    },
-    {
-      id: "498-546",
-      docName: "Aadhar Card",
-      createdAt: Date.parse("05/09/2002 18:45").toString(),
-      expiredAt: Date.now(),
-      accessedFor: 50,
-    },
-    {
-      id: "498-546",
-      docName: "Aadhar Card",
-      createdAt: new Date(Date.parse("05/09/2002 18:45")).toDateString(),
-      expiredAt: Date.parse("05-09-2024"),
-      accessedFor: 50,
-    },
-    {
-      id: "498-546",
-      docName: "Aadhar Card",
-      createdAt: Date.parse("05/09/2002 18:45").toString(),
-      expiredAt: Date.parse("05-09-2024"),
-      accessedFor: 50,
-    },
-    {
-      id: "498-546",
-      docName: "Aadhar Card",
-      createdAt: Date.parse("05/09/2002 18:45").toString(),
-      expiredAt: Date.now(),
-      accessedFor: 50,
-    },
-    {
-      id: "498-546",
-      docName: "Aadhar Card",
-      createdAt: new Date(Date.parse("05/09/2002 18:45")).toDateString(),
-      expiredAt: Date.parse("05-09-2024"),
-      accessedFor: 50,
-    },
-    {
-      id: "498-546",
-      docName: "Aadhar Card",
-      createdAt: Date.parse("05/09/2002 18:45").toString(),
-      expiredAt: Date.parse("05-09-2024"),
-      accessedFor: 50,
-    },
-    {
-      id: "498-546",
-      docName: "Aadhar Card",
-      createdAt: Date.parse("05/09/2002 18:45").toString(),
-      expiredAt: Date.now(),
-      accessedFor: 50,
-    },
-    {
-      id: "498-546",
-      docName: "Aadhar Card",
-      createdAt: new Date(Date.parse("05/09/2002 18:45")).toDateString(),
-      expiredAt: Date.parse("05-09-2024"),
-      accessedFor: 50,
-    },
-    {
-      id: "498-546",
-      docName: "Aadhar Card",
-      createdAt: Date.parse("05/09/2002 18:45").toString(),
-      expiredAt: Date.parse("05-09-2024"),
-      accessedFor: 50,
-    },
-  ]);
+  >(null);
 
   const getData = async () => {
     if (status !== "authenticated") return;
@@ -98,7 +27,6 @@ export default function DocShareTable() {
     const d = await getSharedDocData(session.user?.email ?? "", page);
     setTableData(d.data);
     setTotalPages(d.totalPages);
-    console.log(d);
   };
 
   useEffect(() => {

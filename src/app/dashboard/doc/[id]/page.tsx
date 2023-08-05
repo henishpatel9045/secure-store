@@ -12,6 +12,7 @@ export default async function page({ params }: { params: { id: string } }) {
     name: doc?.name ?? "",
     description: doc?.description ?? "",
     fileName: doc?.fileName ?? "",
+    path: doc?.path ?? "",
   };
 
   return <DocForm docData={docData} isEdit={true} />;

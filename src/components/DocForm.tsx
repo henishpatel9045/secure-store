@@ -15,6 +15,7 @@ export default function DocForm({
     name: string;
     description?: string;
     fileName?: string;
+    path?: string;
   };
   isEdit?: boolean;
 }) {
@@ -116,7 +117,11 @@ export default function DocForm({
             {docData.fileName && (
               <p>
                 Current File:{" "}
-                <span className="text-success">{docData.fileName}</span>
+                <span className="text-success">
+                  <a href={docData.path} target="_blank">
+                    {docData.fileName}
+                  </a>
+                </span>
               </p>
             )}
             <input

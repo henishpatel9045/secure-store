@@ -56,7 +56,7 @@ model SharableDocs {
   id        String   @id @default(uuid())
   doc       Doc      @relation(fields: [docId], references: [id], onDelete: Cascade)
   docId     String
-  accessed  Int
+  accessed  Int      @default(0)
   expireAt  DateTime
   createdAt DateTime @default(now())
 }

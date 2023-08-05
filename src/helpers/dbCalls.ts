@@ -122,7 +122,7 @@ const getSharedDocData = async (email: string, page: number) => {
           accessedFor: item.accessed,
         };
       });
-      prev.concat(tempShareData);
+      prev.push(...tempShareData);
       return prev;
     },
     new Array<{
@@ -140,4 +140,57 @@ const getSharedDocData = async (email: string, page: number) => {
   };
 };
 
-export { getDocsData, getDocData, deleteDoc, getUserData, getSharedDocData };
+const checkActiveDocShare = async (docId: string) => {
+  const doc = await prisma.sharableDocs.findFirst({
+    where: {
+      docId,
+      expireAt: {
+        gt: new Date(Date.now() + 1000 * 30),
+      },
+    },
+  });
+
+  if (doc) {
+    return {
+      exists: true,
+      doc: {
+        id: doc.docId,
+        expiredAt: doc.expireAt.valueOf(),
+        link: "/share/" + doc.id,
+        accessedFor: doc.accessed,
+      },
+    };
+  }
+  return {
+    exists: false,
+  };
+};
+
+const generateShare = async (formData: FormData) => {
+  const docId = formData.get("docId") as string;
+  const expireAt = new Date(Date.parse(formData.get("expiresAt") as string));
+
+  const shareDoc = await prisma.sharableDocs.create({
+    data: {
+      docId: docId,
+      expireAt: expireAt,
+    },
+  });
+
+  return {
+    id: shareDoc.docId,
+    expiredAt: shareDoc.expireAt.valueOf(),
+    link: "/share/" + shareDoc.id,
+    accessedFor: shareDoc.accessed,
+  };
+};
+
+export {
+  getDocsData,
+  getDocData,
+  deleteDoc,
+  getUserData,
+  getSharedDocData,
+  checkActiveDocShare,
+  generateShare,
+};
