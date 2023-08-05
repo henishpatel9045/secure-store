@@ -1,18 +1,24 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 import Table from "./Table";
+import { getSharedDocData } from "@/helpers/dbCalls";
 
 export default function DocShareTable() {
   const [page, setPage] = useState<number>(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const { data: session, status } = useSession();
   const [tableData, setTableData] = useState<
-    {
-      id: string;
-      docName: string;
-      createdAt: string;
-      expiredAt: number;
-      accessedFor: number;
-    }[]
+    | {
+        id: string;
+        docName: string;
+        createdAt: string;
+        expiredAt: number;
+        accessedFor: number;
+      }[]
+    | undefined
+    | null
   >([
     {
       id: "498-546",
@@ -86,13 +92,28 @@ export default function DocShareTable() {
     },
   ]);
 
-  return (
+  const getData = async () => {
+    if (status !== "authenticated") return;
+
+    const d = await getSharedDocData(session.user?.email ?? "", page);
+    setTableData(d.data);
+    setTotalPages(d.totalPages);
+    console.log(d);
+  };
+
+  useEffect(() => {
+    getData();
+  }, [page]);
+
+  return totalPages ? (
     <Table
       title="Shared Document"
       page={page}
       setPage={setPage}
-      totalPages={10}
+      totalPages={totalPages}
       tableData={tableData}
     />
+  ) : (
+    <div />
   );
 }

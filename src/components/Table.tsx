@@ -14,13 +14,16 @@ export default function Table({
   setPage: React.Dispatch<React.SetStateAction<number>>;
   totalPages: number;
   title: string;
-  tableData: {
-    id: string;
-    docName: string;
-    createdAt: string;
-    expiredAt: number;
-    accessedFor: number;
-  }[];
+  tableData:
+    | {
+        id: string;
+        docName: string;
+        createdAt: string;
+        expiredAt: number;
+        accessedFor: number;
+      }[]
+    | undefined
+    | null;
 }) {
   const [] = useState<number>(0);
 

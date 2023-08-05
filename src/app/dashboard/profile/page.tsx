@@ -5,6 +5,8 @@ import { bytesToSize } from "@/helpers/helper";
 import { HiDatabase } from "react-icons/hi";
 import { IoDocumentLock, IoDocument } from "react-icons/io5";
 import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
+import { getUserData } from "@/helpers/dbCalls";
 
 const iconProps = {
   size: 40,
@@ -57,8 +59,28 @@ const Stats = ({
   );
 };
 
-const ProfilePage = async () => {
-  const { data: session } = useSession();
+const ProfilePage = () => {
+  const { data: session, status } = useSession();
+  const [userData, setUserData] = useState<{
+    accounrId: string | undefined;
+    spaceUsed: number | undefined;
+    docs: {
+      total: number | undefined;
+      sharable: number | undefined;
+    };
+    encryptedDocs: {
+      total: number | undefined;
+    };
+  } | null>(null);
+  const getData = async () => {
+    if (status !== "authenticated") return;
+
+    setUserData(await getUserData(session.user?.email ?? ""));
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
 
   return (
     <div className="flex flex-col items-center justify-start bg-base-800 w-full h-full xs:p-4 p-6">
@@ -73,9 +95,12 @@ const ProfilePage = async () => {
       <p className="text-secondary mb-4 text-center">{session?.user?.email}</p>
       <div className="w-full flex-1 flex flex-col items-center gap-4">
         <Stats
-          space={465454545}
-          docs={{ totalCount: 15, sharable: 10 }}
-          encDocs={{ totalCount: 50 }}
+          space={userData?.spaceUsed ?? 0}
+          docs={{
+            totalCount: userData?.docs.total ?? 0,
+            sharable: userData?.docs.sharable ?? 0,
+          }}
+          encDocs={{ totalCount: userData?.encryptedDocs.total ?? 0 }}
         />
         <DocShareTable />
         {/* <EncryptedDocShareTable /> */}

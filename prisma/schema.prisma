@@ -53,9 +53,10 @@ model EncryptedDoc {
 }
 
 model SharableDocs {
-  id       String   @id @default(uuid())
-  doc      Doc      @relation(fields: [docId], references: [id], onDelete: Cascade)
-  docId    String
-  accessed Int
-  expireAt DateTime
+  id        String   @id @default(uuid())
+  doc       Doc      @relation(fields: [docId], references: [id], onDelete: Cascade)
+  docId     String
+  accessed  Int
+  expireAt  DateTime
+  createdAt DateTime @default(now())
 }
