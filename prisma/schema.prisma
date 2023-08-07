@@ -23,18 +23,19 @@ model User {
 }
 
 model Doc {
-  id           String         @id @default(uuid())
-  user         User           @relation(fields: [userEmail], references: [email], onDelete: Cascade)
-  userEmail    String
-  name         String
-  fileName     String         @default("")
-  description  String?
-  fileType     String
-  size         BigInt         @default(0)
-  path         String?
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
-  SharableDocs SharableDocs[]
+  id              String            @id @default(uuid())
+  user            User              @relation(fields: [userEmail], references: [email], onDelete: Cascade)
+  userEmail       String
+  name            String
+  fileName        String            @default("")
+  description     String?
+  fileType        String
+  size            BigInt            @default(0)
+  path            String?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  SharableDocs    SharableDocs[]
+  DocShareRequest DocShareRequest[]
 }
 
 model EncryptedDoc {
@@ -59,4 +60,15 @@ model SharableDocs {
   accessed  Int      @default(0)
   expireAt  DateTime
   createdAt DateTime @default(now())
+}
+
+model DocShareRequest {
+  id          Int      @id @default(autoincrement())    
+  senderName  String
+  senderEmail String?
+  message     String
+  doc         Doc      @relation(fields: [docId], references: [id], onDelete: Cascade)
+  docId       String
+  visited     Boolean  @default(false)
+  createdAt   DateTime @default(now())
 }

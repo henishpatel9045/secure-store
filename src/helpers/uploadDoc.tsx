@@ -3,6 +3,7 @@ import { prisma } from "@/db";
 import { writeFile, mkdirSync, existsSync, rmSync, rm } from "fs";
 import { redirect } from "next/navigation";
 import { Session } from "next-auth";
+import { UPLOAD_PATH_PREFIX } from "@/config/site";
 
 const dirCheck = (accountId: string) => {
   const uploadFolderPath = "./public/uploads";
@@ -58,7 +59,12 @@ const storeFile = async (
   const buffer = await fileToBuffer(file);
   dirCheck(session?.user?.email);
   let filePath: string =
-    "./public/uploads/" + session.user.email + "/doc/" + doc.id + file.name;
+    UPLOAD_PATH_PREFIX +
+    "/uploads/" +
+    session.user.email +
+    "/doc/" +
+    doc.id +
+    file.name;
 
   try {
     writeFile(filePath, buffer, (err) => {});
@@ -68,7 +74,7 @@ const storeFile = async (
       },
       data: {
         fileName: file.name,
-        path: filePath.replace("./public", ""),
+        path: filePath.replace(UPLOAD_PATH_PREFIX, ""),
       },
     });
   } catch (error) {

@@ -1,3 +1,5 @@
 const TABLE_PAGE_SIZE = 10;
+const UPLOAD_PATH_PREFIX = "./public";
+const SHARE_LINK_PREFIX = "/share/doc/";
 
-export { TABLE_PAGE_SIZE };
+export { TABLE_PAGE_SIZE, SHARE_LINK_PREFIX, UPLOAD_PATH_PREFIX };

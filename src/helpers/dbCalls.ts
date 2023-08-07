@@ -1,6 +1,6 @@
 "use server";
 
-import { TABLE_PAGE_SIZE } from "@/config/site";
+import { SHARE_LINK_PREFIX, TABLE_PAGE_SIZE } from "@/config/site";
 import { prisma } from "@/db";
 import { rmSync } from "fs";
 import { redirect } from "next/navigation";
@@ -163,7 +163,7 @@ const checkActiveDocShare = async (docId: string) => {
       doc: {
         id: doc.docId,
         expiredAt: doc.expireAt.valueOf(),
-        link: "/share/" + doc.id,
+        link: SHARE_LINK_PREFIX + doc.id,
         accessedFor: doc.accessed,
       },
     };
@@ -187,9 +187,35 @@ const generateShare = async (formData: FormData) => {
   return {
     id: shareDoc.docId,
     expiredAt: shareDoc.expireAt.valueOf(),
-    link: "/share/" + shareDoc.id,
+    link: SHARE_LINK_PREFIX + shareDoc.id,
     accessedFor: shareDoc.accessed,
   };
+};
+
+const createDocShareRequest = async (formData: FormData) => {
+  const shareId = formData.get("id") as string;
+  const name = formData.get("name") as string;
+  const email = formData.get("email") as string;
+  const message = formData.get("message") as string;
+
+  const docId = (
+    await prisma.sharableDocs.findFirst({
+      where: {
+        id: shareId,
+      },
+    })
+  )?.docId;
+
+  if (docId) {
+    await prisma.docShareRequest.create({
+      data: {
+        docId: docId,
+        senderName: name,
+        senderEmail: email,
+        message: message,
+      },
+    });
+  }
 };
 
 export {
@@ -201,4 +227,5 @@ export {
   checkActiveDocShare,
   generateShare,
   deleteShareDoc,
+  createDocShareRequest,
 };

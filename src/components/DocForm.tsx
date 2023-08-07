@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import { ChangeEvent, useState } from "react";
 import { useRouter, redirect } from "next/navigation";
 import { deleteDoc } from "@/helpers/dbCalls";
+import BtnLoading from "./BtnLoading";
 
 export default function DocForm({
   docData = { name: "", description: "", fileName: "" },
@@ -147,11 +148,7 @@ export default function DocForm({
               return true;
             }}
           >
-            {loading ? (
-              <span className="loading loading-spinner loading-md"></span>
-            ) : (
-              "Save"
-            )}
+            {loading ? <BtnLoading /> : "Save"}
           </button>
           <button type="reset" className="btn btn-warning" disabled={loading}>
             Clear

@@ -1,11 +1,20 @@
-import { sleep } from "@/helpers/helper";
-import React, { useEffect, useRef, useState } from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
 
 const TimerElement = ({ value }: { value: number }) => {
   return <span style={{ "--value": value } as React.CSSProperties}></span>;
 };
 
-export default function Timer({ time }: { time: number }) {
+export default function Timer({
+  time,
+  className,
+  onComplete,
+}: {
+  time: number;
+  className?: string;
+  onComplete?: () => void;
+}) {
   const [remainingTime, setRemainingTime] = useState(time);
 
   useEffect(() => {
@@ -17,17 +26,28 @@ export default function Timer({ time }: { time: number }) {
     return () => clearInterval(interval);
   }, [time]);
 
-  const days = Math.floor(remainingTime / 86400);
-  const hours = Math.floor((remainingTime - days * 84600) / 3600);
-  const minutes = Math.floor(
-    (remainingTime - (days * 84600 + hours * 3600)) / 60
-  );
-  const seconds = Math.floor(
-    remainingTime - (days * 84600 + hours * 3600 + minutes * 60)
-  );
+  if (remainingTime <= 0) onComplete?.();
+
+  const days = remainingTime <= 0 ? 0 : Math.floor(remainingTime / 86400);
+  const hours =
+    remainingTime <= 0 ? 0 : Math.floor((remainingTime - days * 84600) / 3600);
+  const minutes =
+    remainingTime <= 0
+      ? 0
+      : Math.floor((remainingTime - (days * 84600 + hours * 3600)) / 60);
+  const seconds =
+    remainingTime <= 0
+      ? 0
+      : Math.floor(
+          remainingTime - (days * 84600 + hours * 3600 + minutes * 60)
+        );
 
   return (
-    <div className="grid grid-flow-col gap-5 text-center auto-cols-max">
+    <div
+      className={
+        "grid grid-flow-col gap-5 text-center auto-cols-max " + className
+      }
+    >
       {days ? (
         <div className="flex flex-col p-2 bg-neutral rounded-box text-neutral-content">
           <span className="countdown font-mono text-5xl">

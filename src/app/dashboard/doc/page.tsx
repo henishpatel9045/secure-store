@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { generateShare, getDocsData } from "@/helpers/dbCalls";
 import { HiOutlineInformationCircle } from "react-icons/hi";
 import Timer from "@/components/Timer";
+import BtnLoading from "@/components/BtnLoading";
 
 export default function Page() {
   const { data: session, status } = useSession();
@@ -97,9 +98,13 @@ export default function Page() {
               </p>
               <div className="grid grid-cols-4 mt-6 gap-4">
                 <p className="font-bold">DocId: </p>
-                <p className="col-span-3 text-secondary badge badge-ghost p-3 h-fit">
+                <Link
+                  href={shareDocData?.link ?? ""}
+                  className="col-span-3 text-secondary badge badge-ghost p-3 h-fit"
+                  target="_blank"
+                >
                   {shareDocData?.link}
-                </p>
+                </Link>
                 <p className="font-bold">AccessedFor: </p>
                 <p className="col-span-3 text-secondary badge badge-ghost p-3">
                   {shareDocData?.accessedFor}
@@ -142,11 +147,7 @@ export default function Page() {
                   />
                 </div>
                 <button type="submit" className="btn btn-primary">
-                  {loading ? (
-                    <span className="loading loading-spinner loading-md"></span>
-                  ) : (
-                    "Generate"
-                  )}
+                  {loading ? <BtnLoading /> : "Generate"}
                 </button>
               </form>
             </div>

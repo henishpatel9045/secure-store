@@ -1,4 +1,5 @@
 import { randomBytes, createHash } from "crypto";
+import { createCipheriv, createDecipheriv } from "crypto";
 
 const bytesToSize = (bytes: number): string => {
   if (bytes === 0) return "0 KB";
@@ -25,5 +26,20 @@ const sleep = (milliseconds: number): Promise<void> => {
     }, milliseconds);
   });
 };
+
+function encrypt(text: string, key: string, iv: string) {
+  const cipher = createCipheriv("aes-256-cbc", key, iv);
+  let encrypted = cipher.update(text, "utf8", "hex");
+  encrypted += cipher.final("hex");
+  return encrypted;
+}
+
+// Decryption function using AES-CBC
+function decrypt(encryptedText: string, key: string, iv: string) {
+  const decipher = createDecipheriv("aes-256-cbc", key, iv);
+  let decrypted = decipher.update(encryptedText, "hex", "utf8");
+  decrypted += decipher.final("utf8");
+  return decrypted;
+}
 
 export { bytesToSize, generateHash, sleep };
