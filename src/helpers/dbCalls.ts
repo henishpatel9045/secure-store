@@ -96,9 +96,18 @@ const getUserData = async (email: string) => {
     [0, 0]
   );
 
+  const totalEncrypted = await prisma.encryptedDoc.aggregate({
+    _sum: {
+      size: true,
+    },
+    where: {
+      userEmail: email,
+    },
+  });
+
   const data = {
-    accounrId: user?.googleId,
-    spaceUsed: docData?.[1],
+    accountId: user?.googleId,
+    spaceUsed: (docData?.[1] ?? 0) + Number(totalEncrypted._sum.size),
     docs: {
       total: totalDocs,
       sharable: docData?.[0],
@@ -107,6 +116,7 @@ const getUserData = async (email: string) => {
       total: user?.EncryptedDoc.length,
     },
   };
+  console.log("TotalEncrypted: ", totalEncrypted);
 
   return data;
 };

@@ -63,7 +63,7 @@ const Stats = ({
 const ProfilePage = () => {
   const { data: session, status } = useSession();
   const [userData, setUserData] = useState<{
-    accounrId: string | undefined;
+    accountId: string | undefined;
     spaceUsed: number | undefined;
     docs: {
       total: number | undefined;
