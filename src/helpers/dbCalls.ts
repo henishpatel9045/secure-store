@@ -54,6 +54,23 @@ const deleteDoc = async (id: string) => {
   }
 };
 
+const getEncryptedDocsData = async (email: string) => {
+  const docsData = await prisma.encryptedDoc.findMany({
+    where: {
+      userEmail: email,
+    },
+    select: {
+      id: true,
+      name: true,
+      fileType: true,
+      fileName: true,
+      path: true,
+    },
+  });
+
+  return docsData;
+};
+
 const getUserData = async (email: string) => {
   const user = await prisma.user.findFirst({
     where: {
@@ -222,6 +239,7 @@ export {
   getDocsData,
   getDocData,
   deleteDoc,
+  getEncryptedDocsData,
   getUserData,
   getSharedDocData,
   checkActiveDocShare,

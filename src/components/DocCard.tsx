@@ -5,7 +5,6 @@ import { FiEdit } from "react-icons/fi";
 import Link from "next/link";
 import { checkActiveDocShare } from "@/helpers/dbCalls";
 import { useSession } from "next-auth/react";
-import { features } from "process";
 
 export default function DocCard({
   id,
@@ -16,14 +15,15 @@ export default function DocCard({
   setModelDocId,
   setShareDocData,
   setIsActive,
+  isEncryptedDoc,
 }: {
   id: string;
   fileType: string;
   fileName: string;
   name: string;
   path: string;
-  setModelDocId: React.Dispatch<React.SetStateAction<string | null>>;
-  setShareDocData: React.Dispatch<
+  setModelDocId?: React.Dispatch<React.SetStateAction<string | null>>;
+  setShareDocData?: React.Dispatch<
     React.SetStateAction<{
       id: string;
       link: string;
@@ -31,12 +31,13 @@ export default function DocCard({
       accessedFor: number;
     } | null>
   >;
-  setIsActive: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsActive?: React.Dispatch<React.SetStateAction<boolean>>;
+  isEncryptedDoc: boolean;
 }): React.JSX.Element {
   const { data: session } = useSession();
 
   return (
-    <div className="card card-compact w-full bg-base-100 shadow-xl overflow-hidden h-fit">
+    <div className="card card-compact w-full bg-base-100 shadow-xl overflow-hidden h-full">
       {/* <figure> */}
       <img
         className="object-fill w-full hover:opacity-80 hover:transition-all transition-all hover:cursor-pointer active:scale-90"
@@ -70,19 +71,11 @@ export default function DocCard({
           <h3 className="text-gray-400 w-full overflow-hidden">{fileName}</h3>
         </div>
         <div className="card-actions w-full">
-          <div className="join grid grid-cols-3 w-full gap-2">
+          <div className="join grid grid-flow-col auto-cols-auto w-full gap-2">
             <button
               className="btn btn-neutral"
               onClick={async () => {
                 const url = "/api/doc/" + id;
-                // const newWindow = window.open(url, "_blank");
-                // newWindow?.addEventListener("load", () => {
-                //   newWindow.fetch(url, {
-                //     headers: {
-                //       Authorization: JSON.stringify(session?.user ?? ""),
-                //     },
-                //   });
-                // });
                 const res = await fetch(url, {
                   headers: new Headers({
                     Authorization: JSON.stringify(session?.user ?? "{}"),
@@ -100,26 +93,36 @@ export default function DocCard({
             >
               <HiOutlineDownload size={25} />
             </button>
-            <button
+            {!(
+              setModelDocId === undefined ||
+              setIsActive === undefined ||
+              setShareDocData === undefined
+            ) && (
+              <button
+                className="btn btn-neutral"
+                onClick={async () => {
+                  setModelDocId(id);
+                  let dialog: HTMLDialogElement | null =
+                    document.getElementById(
+                      "shareDoc"
+                    ) as HTMLDialogElement | null;
+                  let isActive = await checkActiveDocShare(id);
+                  if (isActive.exists) {
+                    setIsActive(true);
+                    setShareDocData(isActive?.doc ?? null);
+                  } else {
+                    setIsActive(false);
+                  }
+                  dialog?.showModal();
+                }}
+              >
+                <HiShare size={25} />
+              </button>
+            )}
+            <Link
               className="btn btn-neutral"
-              onClick={async () => {
-                setModelDocId(id);
-                let dialog: HTMLDialogElement | null = document.getElementById(
-                  "shareDoc"
-                ) as HTMLDialogElement | null;
-                let isActive = await checkActiveDocShare(id);
-                if (isActive.exists) {
-                  setIsActive(true);
-                  setShareDocData(isActive?.doc ?? null);
-                } else {
-                  setIsActive(false);
-                }
-                dialog?.showModal();
-              }}
+              href={(isEncryptedDoc ? "./encryptedDoc/" : "./doc/") + id}
             >
-              <HiShare size={25} />
-            </button>
-            <Link className="btn btn-neutral" href={"./doc/" + id}>
               <FiEdit size={25} />
             </Link>
           </div>

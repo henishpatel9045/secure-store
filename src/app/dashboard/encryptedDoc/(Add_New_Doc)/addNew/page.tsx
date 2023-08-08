@@ -1,5 +1,7 @@
+import DocForm from "@/components/DocForm";
+import EncryptedDocForm from "@/components/EncryptedDocForm";
+import { saveEncrypted } from "@/helpers/uploadDoc";
+
 export default function Page() {
-  return (
-    <div>page</div>
-  )
+  return <EncryptedDocForm callAction={saveEncrypted} />;
 }

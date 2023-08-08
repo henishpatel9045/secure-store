@@ -27,19 +27,30 @@ const sleep = (milliseconds: number): Promise<void> => {
   });
 };
 
-function encrypt(text: string, key: string, iv: string) {
-  const cipher = createCipheriv("aes-256-cbc", key, iv);
-  let encrypted = cipher.update(text, "utf8", "hex");
-  encrypted += cipher.final("hex");
-  return encrypted;
-}
+const algorithm = "aes-256-ctr";
 
-// Decryption function using AES-CBC
-function decrypt(encryptedText: string, key: string, iv: string) {
-  const decipher = createDecipheriv("aes-256-cbc", key, iv);
-  let decrypted = decipher.update(encryptedText, "hex", "utf8");
-  decrypted += decipher.final("utf8");
-  return decrypted;
-}
+const encrypt = (buffer: Buffer, key: string) => {
+  key = key.trim();
+  key = createHash("sha256").update(String(key)).digest("base64").substr(0, 32);
+  // Create an initialization vector
+  const iv = randomBytes(16);
+  // Create a new cipher using the algorithm, key, and iv
+  const cipher = createCipheriv(algorithm, key, iv);
+  // Create the new (encrypted) buffer
+  const result = Buffer.concat([iv, cipher.update(buffer), cipher.final()]);
+  return result;
+};
 
-export { bytesToSize, generateHash, sleep };
+const decrypt = (encrypted: Buffer, key: string) => {
+  // Get the iv: the first 16 bytes
+  const iv = encrypted.slice(0, 16);
+  // Get the rest
+  encrypted = encrypted.slice(16);
+  // Create a decipher
+  const decipher = createDecipheriv(algorithm, key, iv);
+  // Actually decrypt it
+  const result = Buffer.concat([decipher.update(encrypted), decipher.final()]);
+  return result;
+};
+
+export { bytesToSize, generateHash, sleep, encrypt, decrypt };

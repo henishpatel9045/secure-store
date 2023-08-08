@@ -1,5 +1,6 @@
 import DocForm from "@/components/DocForm";
 import { prisma } from "@/db";
+import { updateDoc } from "@/helpers/uploadDoc";
 
 export default async function Page({ params }: { params: { id: string } }) {
   const doc = await prisma.doc.findFirst({
@@ -15,5 +16,5 @@ export default async function Page({ params }: { params: { id: string } }) {
     path: doc?.path ?? "",
   };
 
-  return <DocForm docData={docData} isEdit={true} />;
+  return <DocForm docData={docData} isEdit={true} callAction={updateDoc} />;
 }

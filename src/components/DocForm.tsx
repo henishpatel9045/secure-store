@@ -1,6 +1,5 @@
 "use client";
 
-import { saveDoc, updateDoc } from "@/helpers/uploadDoc";
 import { useSession } from "next-auth/react";
 import { ChangeEvent, useState } from "react";
 import { useRouter, redirect } from "next/navigation";
@@ -8,9 +7,12 @@ import { deleteDoc } from "@/helpers/dbCalls";
 import BtnLoading from "./BtnLoading";
 
 export default function DocForm({
+  children,
   docData = { name: "", description: "", fileName: "" },
-  isEdit = false,
+  isEdit,
+  callAction,
 }: {
+  children?: React.ReactNode;
   docData?: {
     _id?: string;
     name: string;
@@ -19,6 +21,7 @@ export default function DocForm({
     path?: string;
   };
   isEdit?: boolean;
+  callAction: any;
 }) {
   const { data: session } = useSession();
   const [name, setName] = useState(docData.name);
@@ -56,16 +59,15 @@ export default function DocForm({
       <p className="divider mt-0" />
       <form
         action={async (formData) => {
+          setLoading(true);
+          await callAction(formData, session);
           if (isEdit) {
-            await updateDoc(formData, session);
             setLoading(false);
             setShowToast(true);
             setTimeout(() => {
               setShowToast(false);
             }, 2000);
             router.refresh();
-          } else {
-            await saveDoc(formData, session);
           }
         }}
         className="flex flex-col w-full gap-4"
@@ -134,6 +136,7 @@ export default function DocForm({
             />
           </div>
         </div>
+        {children}
         <div
           className={`w-full self-center grid ${
             isEdit ? "grid-cols-3" : "grid-cols-2"

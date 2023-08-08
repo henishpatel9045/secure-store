@@ -47,7 +47,7 @@ model EncryptedDoc {
   description String?
   fileType    String
   size        BigInt   @default(0)
-  path        String
+  path        String?
   passKey     String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -63,7 +63,7 @@ model SharableDocs {
 }
 
 model DocShareRequest {
-  id          Int      @id @default(autoincrement())    
+  id          Int      @id @default(autoincrement())
   senderName  String
   senderEmail String?
   message     String
