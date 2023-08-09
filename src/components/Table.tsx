@@ -33,26 +33,21 @@ export default function Table({
   const router = useRouter();
 
   return (
-    <div className="table bg-base-100">
+    <div className="bg-base-100 rounded-2xl overflow-x-auto w-full">
       <h2 className="text-2xl font-bold mt-4 ml-4">{title}</h2>
       <p className="divider" />
-      <table className="table">
+      <table className="xs:table-xs md:table lg:table text-center xs:text-xs md:text-md break-words">
         {/* head */}
         <thead>
           <tr>
-            {/* <th>
-              <label>
-                <input type="checkbox" className="checkbox" />
-              </label>
-            </th> */}
-            <th>DocName</th>
+            <th className="xs:text-xs md:text-md">DocName</th>
             <th>Link Created at</th>
             <th>Accessed for</th>
             <th>Is accessible</th>
             <th>Delete</th>
           </tr>
         </thead>
-        <tbody className="w-full h-full">
+        <tbody className="w-full h-full overflow-scroll">
           {tableData &&
             tableData?.map((item, index) => {
               return (

@@ -7,11 +7,13 @@ import { usePathname } from "next/navigation";
 const Sidebar = ({
   minimized,
   setMinimized,
+  className,
 }: // selected,
 // setSelected,
 {
   minimized: boolean;
   setMinimized: React.Dispatch<React.SetStateAction<boolean>>;
+  className?: string;
   // selected: number | string;
   // setSelected: React.Dispatch<React.SetStateAction<number>>;
 }) => {
@@ -20,8 +22,8 @@ const Sidebar = ({
   return (
     <div
       className={`z-50 bg-base-200 h-full ${
-        minimized ? "w-16" : "w-48"
-      } transition-all fixed`}
+        minimized ? "xs:-ml-16 lg:ml-0 lg:w-16" : "w-48"
+      } transition-all fixed ${className}`}
     >
       <nav className="text-white pt-4 flex flex-col items-center justify-between w-full h-full">
         <ul className="w-full">

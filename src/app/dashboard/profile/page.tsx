@@ -29,7 +29,7 @@ const Stats = ({
   };
 }) => {
   return (
-    <div className="stats shadow w-full">
+    <div className="stats shadow w-full xs:flex xs:flex-col md:flex-row">
       <div className="stat">
         <div className="stat-figure text-secondary">
           <HiDatabase {...iconProps} />
@@ -88,7 +88,7 @@ const ProfilePage = () => {
       <img
         src={session?.user?.image ?? ""}
         alt={session?.user?.name ?? ""}
-        className="xs:w-1/3 w-40 h-40 rounded-full mb-4 mx-auto"
+        className="sm:w-1/3 md:w-40 h-40 rounded-full mb-4 mx-auto"
       />
       <h1 className="text-2xl font-bold mb-2 text-center">
         {session?.user?.name}

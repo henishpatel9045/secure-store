@@ -67,8 +67,16 @@ export default function DashboardLayout({
         </div>
       </div>
       <div className="flex items-start justify-start h-full w-full overflow-y-auto">
-        <Sidebar minimized={isOpen} setMinimized={setIsOpen} />
-        <div className={`flex-1 h-full overflow-auto ${isOpen ? "ml-16" : "ml-48"}`}>
+        <Sidebar
+          minimized={isOpen}
+          setMinimized={setIsOpen}
+          // className="xs:absolute lg:block"
+        />
+        <div
+          className={`flex-1 h-full overflow-auto ${
+            isOpen ? "xs:ml-0 lg:ml-16" : "ml-48"
+          }`}
+        >
           {children}
         </div>
       </div>
