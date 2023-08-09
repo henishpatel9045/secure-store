@@ -33,7 +33,7 @@ const handler = NextAuth({
       return true;
     },
   },
-  secret: process.env.SECRET_KEY ?? "dadas57d1r4e89wr7afsd7/wr",
+  secret: process.env.SECRET ?? "db24d5bada6b34ee55d1a0dd888ff9f0",
 });
 
 export { handler as GET, handler as POST };
