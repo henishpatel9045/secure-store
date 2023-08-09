@@ -42,6 +42,8 @@ const encrypt = (buffer: Buffer, key: string) => {
 };
 
 const decrypt = (encrypted: Buffer, key: string) => {
+  key = key.trim();
+  key = createHash("sha256").update(String(key)).digest("base64").substr(0, 32);
   // Get the iv: the first 16 bytes
   const iv = encrypted.slice(0, 16);
   // Get the rest

@@ -18,7 +18,7 @@ export default function EncryptedDocForm({
   callAction: any;
 }) {
   return (
-    <DocForm docData={docData} callAction={callAction}>
+    <DocForm docData={docData} callAction={callAction} isEdit={isEdit}>
       <div className="grid grid-cols-6 gap-4 items-center">
         <label
           className="sm:text-md md:text-xl lg:text-xl sm:col-span-2 md:col-span-1 break-words"

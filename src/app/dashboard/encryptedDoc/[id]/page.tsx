@@ -1,4 +1,3 @@
-import DocForm from "@/components/DocForm";
 import EncryptedDocForm from "@/components/EncryptedDocForm";
 import { prisma } from "@/db";
 import { updateEncryptedDoc } from "@/helpers/uploadDoc";

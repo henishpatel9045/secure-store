@@ -21,11 +21,15 @@ export default function Page() {
   const [loading, setLoading] = useState(false);
 
   return (
-    <DocsListPage isEncryptedPage={false} getDocsData={getDocsData} docCardProps={{
-      setShareDocData: setShareDocData,
-      setModelDocId: setModelDocId,
-      setIsActive: setIsShareLinkValid
-    }}>
+    <DocsListPage
+      isEncryptedPage={false}
+      getDocsData={getDocsData}
+      docCardProps={{
+        setShareDocData: setShareDocData,
+        setModelDocId: setModelDocId,
+        setIsActive: setIsShareLinkValid,
+      }}
+    >
       <dialog id="shareDoc" className="modal relative">
         <div className="modal-box flex flex-col items-center gap-6">
           <form

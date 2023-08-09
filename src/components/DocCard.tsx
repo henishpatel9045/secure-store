@@ -75,7 +75,15 @@ export default function DocCard({
             <button
               className="btn btn-neutral"
               onClick={async () => {
-                const url = "/api/doc/" + id;
+                const passKey = prompt(
+                  "Enter your passKey for document ",
+                  name
+                );
+                const url =
+                  (isEncryptedDoc ? "/api/encryptedDoc/" : "/api/doc/") +
+                  id +
+                  "?passKey=" +
+                  passKey;
                 const res = await fetch(url, {
                   headers: new Headers({
                     Authorization: JSON.stringify(session?.user ?? "{}"),
