@@ -4,7 +4,7 @@ import DocCard from "@/components/DocCard";
 import Link from "next/link";
 import { useState } from "react";
 import { generateShare, getDocsData } from "@/helpers/dbCalls";
-import { HiOutlineInformationCircle } from "react-icons/hi";
+import { HiOutlineClipboard, HiOutlineInformationCircle } from "react-icons/hi";
 import Timer from "@/components/Timer";
 import BtnLoading from "@/components/BtnLoading";
 import DocsListPage from "@/components/DocsListPage";
@@ -53,8 +53,8 @@ export default function Page() {
               <p className="text-xl font-bold">
                 Active sharable link for doc already exists.
               </p>
-              <div className="grid grid-cols-4 mt-6 gap-4">
-                <p className="font-bold">DocId: </p>
+              <div className="grid grid-cols-4 mt-6 gap-4 items-center">
+                <p className="font-bold xs:text-sm md:text-lg">DocId: </p>
                 <Link
                   href={shareDocData?.link ?? ""}
                   className="col-span-3 text-secondary badge badge-ghost p-3 h-fit"
@@ -62,11 +62,13 @@ export default function Page() {
                 >
                   {shareDocData?.link}
                 </Link>
-                <p className="font-bold">AccessedFor: </p>
+                <p className="font-bold xs:text-sm md:text-lg">AccessedFor: </p>
                 <p className="col-span-3 text-secondary badge badge-ghost p-3">
                   {shareDocData?.accessedFor}
                 </p>
-                <p className="font-bold">Remaining Time: </p>
+                <p className="font-bold xs:text-sm md:text-lg">
+                  Remaining Time:{" "}
+                </p>
                 <p className="col-span-3">
                   <Timer
                     time={((shareDocData?.expiredAt ?? 0) - Date.now()) / 1000}
@@ -92,8 +94,16 @@ export default function Page() {
                 <input type="hidden" name="docId" value={modelDocId ?? ""} />
                 <div className="grid grid-cols-3 gap-4 w-full">
                   <p>DocId: </p>
-                  <p className="col-span-2 text-secondary badge badge-ghost p-3 h-fit">
-                    {modelDocId}
+                  <p className="col-span-2 text-secondary badge badge-ghost p-3 h-fit relative">
+                    <button
+                      className="btn btn-ghost absolute top-2 right-3 p-2"
+                      onClick={() => {
+                        navigator.clipboard.writeText(modelDocId ?? "");
+                      }}
+                    >
+                      <HiOutlineClipboard size={15} color="#FFF" />
+                    </button>
+                    <span>{modelDocId}</span>
                   </p>
                   <p>ExpiresAt: </p>
                   <input

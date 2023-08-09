@@ -21,15 +21,15 @@ export default function EncryptedDocForm({
     <DocForm docData={docData} callAction={callAction} isEdit={isEdit}>
       <div className="grid grid-cols-6 gap-4 items-center">
         <label
-          className="sm:text-md md:text-xl lg:text-xl sm:col-span-2 md:col-span-1 break-words"
+          className="md:text-lg lg:text-xl break-words xs:hidden md:block sm:col-span-2 md:col-span-1 "
           htmlFor="name"
         >
           PassKey
         </label>
-        <input
-          type="text"
+        <textarea
           placeholder="Any text you want to set as this doc's passKey. Store it someplace safe as you will never see this again."
-          className="input input-bordered w-fit md:w-full sm:col-span-4 md:col-span-5"
+          className="input input-bordered min-h-fit h-full min-w-fit md:w-full xs:col-span-6 sm:col-span-4 md:col-span-5 p-2"
+          rows={4}
           name="passKey"
           id="name"
           required={!isEdit}

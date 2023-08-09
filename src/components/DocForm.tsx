@@ -75,9 +75,9 @@ export default function DocForm({
         {docData._id && (
           <input type="hidden" name="docId" value={docData._id} />
         )}
-        <div className="grid grid-cols-6 gap-4 items-center">
+        <div className="grid grid-cols-6 gap-4 items-center w-full">
           <label
-            className="sm:text-md md:text-xl lg:text-xl sm:col-span-2 md:col-span-1 break-words"
+            className="md:text-lg lg:text-xl sm:col-span-2 md:col-span-1 break-words xs:hidden md:block"
             htmlFor="name"
           >
             Name
@@ -85,7 +85,7 @@ export default function DocForm({
           <input
             type="text"
             placeholder="Doc Name"
-            className="input input-bordered w-fit md:w-full sm:col-span-4 md:col-span-5"
+            className="input input-bordered min-w-fit md:w-full xs:col-span-6 sm:col-span-4 md:col-span-5"
             name="name"
             id="name"
             value={name}
@@ -95,13 +95,13 @@ export default function DocForm({
         </div>
         <div className="grid grid-cols-6 gap-4 items-center">
           <label
-            className="sm:text-md md:text-xl lg:text-xl sm:col-span-2 md:col-span-1 break-words"
+            className="md:text-lg lg:text-xl sm:col-span-2 md:col-span-1 break-words xs:hidden md:block"
             htmlFor="description"
           >
             Description
           </label>
           <textarea
-            className="textarea textarea-bordered sm:col-span-4 md:col-span-5 w-fit md:w-full"
+            className="textarea textarea-bordered min-w-fit md:w-full xs:col-span-6 sm:col-span-4 md:col-span-5"
             placeholder="Description"
             name="description"
             id="description"
@@ -111,12 +111,12 @@ export default function DocForm({
         </div>
         <div className="grid grid-cols-6 gap-4 items-center">
           <label
-            className="sm:text-md md:text-xl lg:text-xl sm:col-span-2 md:col-span-1 break-words"
+            className="md:text-lg lg:text-xl sm:col-span-2 md:col-span-1 break-words xs:hidden md:block"
             htmlFor="doc"
           >
             Document
           </label>
-          <div className="sm:col-span-4 md:col-span-2 w-fit md:w-full flex flex-col items-start justify-center">
+          <div className="min-w-fit md:w-full xs:col-span-6 sm:col-span-4 md:col-span-5 flex flex-col items-start justify-center">
             {docData.fileName && (
               <p>
                 Current File:{" "}
@@ -140,7 +140,7 @@ export default function DocForm({
         <div
           className={`w-full self-center grid ${
             isEdit ? "grid-cols-3" : "grid-cols-2"
-          } gap-4 mt-20`}
+          } gap-4 xs:mt-10 sm:mt-20`}
         >
           <button
             type="submit"

@@ -59,7 +59,7 @@ export default function DocsListPage({
       <div className="w-full text-start text-2xl font-bold">
         {isEncryptedPage ? "Your Encrypted Docs" : "Your Documents"}
       </div>
-      <div className="divider -mt-0" />
+      <div className="divider mt-2" />
       <div className="relative w-full grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 grid-flow-row auto-rows-auto">
         {docsData.length !== 0 ? (
           docsData.map((item, index) => (

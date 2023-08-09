@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 import Sidebar from "@/components/Sidebar";
 import Footer from "@/components/Footer";
 import { signOut, useSession } from "next-auth/react";
-import { redirect, useRouter } from "next/navigation";
-import { sleep } from "@/helpers/helper";
+import { redirect } from "next/navigation";
+import Link from "next/link";
 import Loading from "@/components/Loading";
 
 export default function DashboardLayout({
@@ -13,7 +13,6 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const [isOpen, setIsOpen] = useState(false);
-  // const [selecredPage, setSelectedPage] = useState(0);
   const { data: session, status } = useSession({
     required: true,
     onUnauthenticated() {
@@ -48,13 +47,9 @@ export default function DashboardLayout({
             className="menu menu-sm dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52 z-30"
           >
             <li>
-              <a className="justify-between">
+              <Link href="/dashboard/profile" className="justify-between">
                 Profile
-                <span className="badge">New</span>
-              </a>
-            </li>
-            <li>
-              <a>Settings</a>
+              </Link>
             </li>
             <li
               onClick={() => {
@@ -70,7 +65,7 @@ export default function DashboardLayout({
         <Sidebar
           minimized={isOpen}
           setMinimized={setIsOpen}
-          // className="xs:absolute lg:block"
+          className="xs:absolute xs:left-0"
         />
         <div
           className={`flex-1 h-full overflow-auto ${

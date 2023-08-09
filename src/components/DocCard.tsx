@@ -75,10 +75,10 @@ export default function DocCard({
             <button
               className="btn btn-neutral"
               onClick={async () => {
-                const passKey = prompt(
-                  "Enter your passKey for document ",
-                  name
-                );
+                let passKey;
+                if (isEncryptedDoc) {
+                  passKey = prompt("Enter your passKey for document ", name);
+                }
                 const url =
                   (isEncryptedDoc ? "/api/encryptedDoc/" : "/api/doc/") +
                   id +

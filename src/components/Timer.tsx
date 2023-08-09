@@ -45,12 +45,13 @@ export default function Timer({
   return (
     <div
       className={
-        "grid grid-flow-col gap-5 text-center auto-cols-max " + className
+        "grid grid-flow-col xs:gap-2 md:gap-4 text-center auto-cols-max " +
+        className
       }
     >
       {days ? (
         <div className="flex flex-col p-2 bg-neutral rounded-box text-neutral-content">
-          <span className="countdown font-mono text-5xl">
+          <span className="countdown font-mono xs:text-3xl md:text-5xl">
             <TimerElement value={days} />
           </span>
           days
@@ -59,19 +60,19 @@ export default function Timer({
         <></>
       )}
       <div className="flex flex-col p-2 bg-neutral rounded-box text-neutral-content">
-        <span className="countdown font-mono text-5xl">
+        <span className="countdown font-mono xs:text-3xl md:text-5xl">
           <TimerElement value={hours} />
         </span>
         hours
       </div>
       <div className="flex flex-col p-2 bg-neutral rounded-box text-neutral-content">
-        <span className="countdown font-mono text-5xl">
+        <span className="countdown font-mono xs:text-3xl md:text-5xl">
           <TimerElement value={minutes} />
         </span>
         min
       </div>
       <div className="flex flex-col p-2 bg-neutral rounded-box text-neutral-content">
-        <span className="countdown font-mono text-5xl">
+        <span className="countdown font-mono xs:text-3xl md:text-5xl">
           <TimerElement value={seconds} />
         </span>
         sec
