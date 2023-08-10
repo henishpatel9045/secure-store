@@ -1,6 +1,6 @@
 import { UPLOAD_PATH_PREFIX } from "@/config/site";
 import { prisma } from "@/db";
-import { decrypt } from "@/helpers/helper";
+import { decrypt, generatePassKeyHash } from "@/helpers/helper";
 import { readFileSync } from "fs";
 
 export async function GET(
@@ -9,10 +9,10 @@ export async function GET(
 ) {
   const url = new URL(req.url);
   const queryParams = new URLSearchParams(url.searchParams);
-  const passKey = queryParams.get("passKey");
+  let passKey = queryParams.get("passKey");
   const session = req.headers.get("Authorization");
   const userData = JSON.parse(session ?? "{}");
-  console.log("PassKey: ", passKey);
+  passKey = generatePassKeyHash(passKey ?? "");
 
   if (userData) {
     const doc = await prisma.encryptedDoc.findFirst({
@@ -28,30 +28,35 @@ export async function GET(
 
       try {
         if (!passKey || passKey !== doc.passKey) {
-          console.log("If called 43465461787/7970100000000000000000000");
+          console.log("If called");
+          return new Response(
+            JSON.stringify({ detail: "Error occurred passkey is incorrect." }),
+            {
+              status: 400,
+            }
+          );
+        } else {
+          console.log("Outside IF CALLED");
 
-          return new Response("Error occurred passkey is incorrect.");
+          const encFile = readFileSync(UPLOAD_PATH_PREFIX + doc.path);
+          const file = decrypt(encFile, doc?.passKey);
+
+          const headers = new Headers();
+          headers.set(
+            "Content-Disposition",
+            `${
+              (queryParams.get("inline") as number | null) == 1
+                ? "inline"
+                : "attachment"
+            }; filename=${doc.fileName}`
+          );
+          headers.set("Content-Type", doc.fileType);
+
+          return new Response(file, {
+            headers: headers,
+            status: 200,
+          });
         }
-        console.log("Outside IF CALLED");
-
-        const encFile = readFileSync(UPLOAD_PATH_PREFIX + doc.path);
-        const file = decrypt(encFile, doc?.passKey);
-
-        const headers = new Headers();
-        headers.set(
-          "Content-Disposition",
-          `${
-            (queryParams.get("inline") as number | null) == 1
-              ? "inline"
-              : "attachment"
-          }; filename=${doc.fileName}`
-        );
-        headers.set("Content-Type", doc.fileType);
-
-        return new Response(file, {
-          headers: headers,
-          status: 200,
-        });
       } catch (error) {
         console.log(error);
         return new Response(

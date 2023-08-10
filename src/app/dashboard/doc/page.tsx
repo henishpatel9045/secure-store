@@ -8,6 +8,7 @@ import { HiOutlineClipboard, HiOutlineInformationCircle } from "react-icons/hi";
 import Timer from "@/components/Timer";
 import BtnLoading from "@/components/BtnLoading";
 import DocsListPage from "@/components/DocsListPage";
+import DialogContainer from "@/components/DialogContainer";
 
 export default function Page() {
   const [modelDocId, setModelDocId] = useState<string | null>(null);
@@ -30,7 +31,7 @@ export default function Page() {
         setIsActive: setIsShareLinkValid,
       }}
     >
-      <dialog id="shareDoc" className="modal relative">
+      <DialogContainer id="shareDoc">
         <div className="modal-box flex flex-col items-center gap-6">
           <form
             method="dialog"
@@ -54,7 +55,7 @@ export default function Page() {
                 Active sharable link for doc already exists.
               </p>
               <div className="grid grid-cols-4 mt-6 gap-4 items-center">
-                <p className="font-bold xs:text-sm md:text-lg">DocId: </p>
+                <p className="font-bold xs:text-sm md:text-md">ShareLink: </p>
                 <Link
                   href={shareDocData?.link ?? ""}
                   className="col-span-3 text-secondary badge badge-ghost p-3 h-fit"
@@ -62,11 +63,11 @@ export default function Page() {
                 >
                   {shareDocData?.link}
                 </Link>
-                <p className="font-bold xs:text-sm md:text-lg">AccessedFor: </p>
+                <p className="font-bold xs:text-sm md:text-md">AccessedFor: </p>
                 <p className="col-span-3 text-secondary badge badge-ghost p-3">
                   {shareDocData?.accessedFor}
                 </p>
-                <p className="font-bold xs:text-sm md:text-lg">
+                <p className="font-bold xs:text-sm md:text-md">
                   Remaining Time:{" "}
                 </p>
                 <p className="col-span-3">
@@ -120,7 +121,7 @@ export default function Page() {
             </div>
           )}
         </div>
-      </dialog>
+      </DialogContainer>
     </DocsListPage>
   );
 }

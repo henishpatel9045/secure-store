@@ -3,6 +3,7 @@
 import { createDocShareRequest } from "@/helpers/dbCalls";
 import { useState } from "react";
 import BtnLoading from "./BtnLoading";
+import { toast } from "react-toastify";
 
 const RequestForm = ({ shareId }: { shareId: string }) => {
   const [loading, setLoading] = useState(false);
@@ -14,7 +15,7 @@ const RequestForm = ({ shareId }: { shareId: string }) => {
         setLoading(true);
         await createDocShareRequest(formData);
         setLoading(false);
-        alert("Request form submitted successfully!!");
+        toast.success("Request form submitted successfully!!");
         window.location.reload();
       }}
     >

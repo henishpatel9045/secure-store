@@ -65,7 +65,6 @@ export default function DashboardLayout({
         <Sidebar
           minimized={isOpen}
           setMinimized={setIsOpen}
-          className="xs:absolute xs:left-0"
         />
         <div
           className={`flex-1 h-full overflow-auto ${

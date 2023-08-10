@@ -170,13 +170,14 @@ export default function DocForm({
                   try {
                     if (isEncryptedDoc) {
                       await deleteEncryptedDoc(docData._id ?? "");
+                      router.push("/dashboard/encryptedDoc");
                     } else {
                       await deleteDoc(docData._id ?? "");
+                      router.push("/dashboard/doc");
                     }
                   } catch (error) {
                     console.log("Error while deleting: ", error);
                   }
-                  router.push("/dashboard/doc");
                 }
               }}
             >

@@ -5,6 +5,7 @@ import { FiEdit } from "react-icons/fi";
 import Link from "next/link";
 import { checkActiveDocShare } from "@/helpers/dbCalls";
 import { useSession } from "next-auth/react";
+import { toast } from "react-toastify";
 
 export default function DocCard({
   id,
@@ -89,14 +90,22 @@ export default function DocCard({
                     Authorization: JSON.stringify(session?.user ?? "{}"),
                   }),
                 });
-                const blobUrl = URL.createObjectURL(await res.blob());
-                const link = document.createElement("a");
-                link.href = blobUrl;
-                link.download = fileName;
+                if (res.ok) {
+                  const blobUrl = URL.createObjectURL(await res.blob());
+                  const link = document.createElement("a");
+                  link.href = blobUrl;
+                  link.download = fileName;
+                  link.click();
+                  URL.revokeObjectURL(blobUrl);
+                } else {
+                  toast.error(
+                    `Error downloading file ${fileName} \nerror: ${
+                      (await res.json())?.detail
+                    }`
+                  );
+                }
 
                 // Trigger a click event on the link to initiate the download
-                link.click();
-                URL.revokeObjectURL(blobUrl);
               }}
             >
               <HiOutlineDownload size={25} />
