@@ -1,14 +1,14 @@
 "use client";
 
-import DocCard from "@/components/DocCard";
 import Link from "next/link";
 import { useState } from "react";
-import { generateShare, getDocsData } from "@/helpers/dbCalls";
-import { HiOutlineClipboard, HiOutlineInformationCircle } from "react-icons/hi";
+import { deleteShareDoc, generateShare, getDocsData } from "@/helpers/dbCalls";
+import { HiOutlineClipboard } from "react-icons/hi";
 import Timer from "@/components/Timer";
 import BtnLoading from "@/components/BtnLoading";
 import DocsListPage from "@/components/DocsListPage";
 import DialogContainer from "@/components/DialogContainer";
+import { toast } from "react-toastify";
 
 export default function Page() {
   const [modelDocId, setModelDocId] = useState<string | null>(null);
@@ -75,6 +75,20 @@ export default function Page() {
                     time={((shareDocData?.expiredAt ?? 0) - Date.now()) / 1000}
                   />
                 </p>
+                <button
+                  className="btn btn-error col-span-4 text-white"
+                  onClick={async () => {
+                    setLoading(true);
+                    await deleteShareDoc(shareDocData?.id ?? "");
+                    setLoading(false);
+                    setIsShareLinkValid(false);
+                    toast.success(
+                      `ShareLink ${shareDocData?.link} deleted successfully.`
+                    );
+                  }}
+                >
+                  Delete
+                </button>
               </div>
             </div>
           ) : (
@@ -89,6 +103,19 @@ export default function Page() {
                   setLoading(false);
                   setIsShareLinkValid(true);
                   setShareDocData(data);
+                  toast.success(
+                    <p>
+                      Sharable{" "}
+                      <a
+                        className="link link-success"
+                        href={data.link}
+                        target="_blank"
+                      >
+                        link
+                      </a>{" "}
+                      generated successfully.
+                    </p>
+                  );
                 }}
                 className="flex flex-col items-center gap-6"
               >
@@ -112,9 +139,13 @@ export default function Page() {
                     name="expiresAt"
                     className="col-span-2 p-2"
                     required
+                    min={new Date().toISOString().slice(0, 16)}
+                    max={new Date(Date.now() + 100 * 24 * 60 * 60 * 1000)
+                      .toISOString()
+                      .slice(0, 16)}
                   />
                 </div>
-                <button type="submit" className="btn btn-primary">
+                <button type="submit" className="btn btn-primary w-full">
                   {loading ? <BtnLoading /> : "Generate"}
                 </button>
               </form>

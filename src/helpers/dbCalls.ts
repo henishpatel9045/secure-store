@@ -193,7 +193,7 @@ const checkActiveDocShare = async (docId: string) => {
     return {
       exists: true,
       doc: {
-        id: doc.docId,
+        id: doc.id,
         expiredAt: doc.expireAt.valueOf(),
         link: SHARE_LINK_PREFIX + doc.id,
         accessedFor: doc.accessed,
@@ -217,7 +217,7 @@ const generateShare = async (formData: FormData) => {
   });
 
   return {
-    id: shareDoc.docId,
+    id: shareDoc.id,
     expiredAt: shareDoc.expireAt.valueOf(),
     link: SHARE_LINK_PREFIX + shareDoc.id,
     accessedFor: shareDoc.accessed,

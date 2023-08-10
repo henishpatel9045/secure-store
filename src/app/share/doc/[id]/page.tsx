@@ -35,7 +35,7 @@ export default async function ShareDocView({
   }
 
   return (
-    <div className="w-full h-full flex items-center justify-center">
+    <div className="w-full h-full flex items-center justify-center p-4">
       {doc && shareDoc.expireAt.valueOf() > Date.now() ? (
         <ShareDoc
           data={{
