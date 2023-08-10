@@ -1,4 +1,11 @@
-import { deleteObject, ref, uploadBytes } from "firebase/storage";
+import {
+  deleteObject,
+  getBlob,
+  getDownloadURL,
+  getStream,
+  ref,
+  uploadBytes,
+} from "firebase/storage";
 import { storage } from "@/FirebaseConfig";
 
 const writeFile = async (
@@ -23,4 +30,13 @@ const rmSync = async (path: string) => {
   }
 };
 
-export { writeFile, rmSync };
+const getFile = async (path: string) => {
+  const storageRef = ref(storage, path);
+
+  const fileURL = await getDownloadURL(storageRef);
+  const file = await fetch(fileURL);
+
+  return await file.blob();
+};
+
+export { writeFile, rmSync, getFile };

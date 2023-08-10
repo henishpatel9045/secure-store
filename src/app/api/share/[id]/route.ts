@@ -1,5 +1,6 @@
 import { UPLOAD_PATH_PREFIX } from "@/config/site";
 import { prisma } from "@/db";
+import { getFile } from "@/helpers/fileStorageFunctions";
 import { readFileSync } from "fs";
 
 export async function GET(
@@ -41,7 +42,7 @@ export async function GET(
 
   if (doc && doc.path) {
     try {
-      const file = readFileSync(UPLOAD_PATH_PREFIX + doc.path);
+      const file = await getFile(doc.path);
       const headers = new Headers();
       headers.set(
         "Content-Disposition",

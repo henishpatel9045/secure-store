@@ -1,5 +1,6 @@
 import { UPLOAD_PATH_PREFIX } from "@/config/site";
 import { prisma } from "@/db";
+import { getFile } from "@/helpers/fileStorageFunctions";
 import { decrypt, generatePassKeyHash } from "@/helpers/helper";
 import { readFileSync } from "fs";
 
@@ -38,8 +39,11 @@ export async function GET(
         } else {
           console.log("Outside IF CALLED");
 
-          const encFile = readFileSync(UPLOAD_PATH_PREFIX + doc.path);
-          const file = decrypt(encFile, doc?.passKey);
+          const encFile = await getFile(doc.path);
+          const file = decrypt(
+            Buffer.from(await encFile.arrayBuffer()),
+            doc?.passKey
+          );
 
           const headers = new Headers();
           headers.set(
