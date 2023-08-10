@@ -1,10 +1,11 @@
 "use server";
 import { prisma } from "@/db";
-import { writeFile, mkdirSync, existsSync, rmSync, rm } from "fs";
+import { mkdirSync, existsSync, rm, write } from "fs";
 import { redirect } from "next/navigation";
 import { Session } from "next-auth";
 import { UPLOAD_PATH_PREFIX } from "@/config/site";
 import { encrypt, generatePassKeyHash } from "./helper";
+import { writeFile, rmSync } from "./fileStorageFunctions";
 
 const dirCheck = (accountId: string) => {
   const uploadFolderPath = UPLOAD_PATH_PREFIX + "/uploads";
@@ -59,10 +60,19 @@ const storeFile = async (
   if (!(session && session.user?.email)) {
     throw new Error("User is not logged in.");
   }
-  dirCheck(session?.user?.email);
+
+  // ----------------------- LOCAL FILE UPLOAD -----------------------------
+  // // // dirCheck(session?.user?.email);
+  // // // let filePath: string =
+  // // //   UPLOAD_PATH_PREFIX +
+  // // //   "/uploads/" +
+  // // //   session.user.email +
+  // // //   (isEncrypted ? "/encDoc/" : "/doc/") +
+  // // //   doc.id +
+  // // //   (isEncrypted ? doc.name + ".bin" : file.name);
+
   let filePath: string =
-    UPLOAD_PATH_PREFIX +
-    "/uploads/" +
+    "uploads/" +
     session.user.email +
     (isEncrypted ? "/encDoc/" : "/doc/") +
     doc.id +
@@ -73,14 +83,17 @@ const storeFile = async (
     if (!key) throw new Error("Key is required to store encrypted documents.");
     buffer = encrypt(buffer, key);
     try {
-      writeFile(filePath, buffer, (err) => {});
+      await writeFile(filePath, buffer, (err) => {
+        console.log("Error in FIREBASE UPLOAD: ", err);
+      });
+
       await prisma.encryptedDoc.update({
         where: {
           id: doc.id,
         },
         data: {
           fileName: file.name,
-          path: filePath.replace(UPLOAD_PATH_PREFIX, ""),
+          path: filePath,
         },
       });
     } catch (error) {
@@ -90,19 +103,19 @@ const storeFile = async (
           id: doc.id,
         },
       });
-      rmSync(filePath);
+      await rmSync(filePath);
       throw error;
     }
   } else {
     try {
-      writeFile(filePath, buffer, (err) => {});
+      await writeFile(filePath, buffer, (err) => {});
       await prisma.doc.update({
         where: {
           id: doc.id,
         },
         data: {
           fileName: file.name,
-          path: filePath.replace(UPLOAD_PATH_PREFIX, ""),
+          path: filePath,
         },
       });
     } catch (error) {
@@ -112,7 +125,7 @@ const storeFile = async (
           id: doc.id,
         },
       });
-      rmSync(filePath);
+      await rmSync(filePath);
       throw error;
     }
   }
@@ -177,10 +190,8 @@ const updateDoc = async (formData: FormData, session: Session | null) => {
   if (file?.size) {
     try {
       await storeFile(file, session, doc, false);
-      try {
-        rm(UPLOAD_PATH_PREFIX + prevDoc?.path ?? "", (err) => {
-          console.log("Error deleting current file: ", err);
-        });
+      try { 
+        await rmSync(prevDoc?.path ?? "");
       } catch (error) {}
     } catch (error) {
       await prisma.doc.update({
@@ -266,9 +277,7 @@ const updateEncryptedDoc = async (
     try {
       await storeFile(file, session, doc, true, doc.passKey);
       try {
-        rm(UPLOAD_PATH_PREFIX + prevDoc?.path ?? "", (err) => {
-          console.log("Error deleting current file: ", err);
-        });
+        await rmSync(prevDoc?.path ?? "");
       } catch (error) {}
     } catch (error) {
       await prisma.encryptedDoc.update({

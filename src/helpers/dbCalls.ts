@@ -6,7 +6,7 @@ import {
   UPLOAD_PATH_PREFIX,
 } from "@/config/site";
 import { prisma } from "@/db";
-import { rmSync } from "fs";
+import { rmSync } from "./fileStorageFunctions";
 import { redirect } from "next/navigation";
 
 const getDocsData = async (email: string) => {
@@ -53,7 +53,7 @@ const deleteDoc = async (id: string) => {
   console.log(doc);
 
   try {
-    rmSync(UPLOAD_PATH_PREFIX + doc.path ?? "");
+    await rmSync(doc.path ?? "");
   } catch (error) {
     console.log(error);
   }
@@ -257,7 +257,7 @@ const deleteEncryptedDoc = async (id: string) => {
     },
   });
   try {
-    rmSync(UPLOAD_PATH_PREFIX + doc.path);
+    await rmSync(doc?.path ?? "");
   } catch (error) {
     console.log("deleteEncryptedDoc: error: ", error);
   }
