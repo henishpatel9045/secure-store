@@ -10,7 +10,7 @@ const RequestForm = ({ shareId }: { shareId: string }) => {
 
   return (
     <form
-      className="rounded-lg bg-base-300 grid grid-cols-3 gap-4 px-4 py-6"
+      className="rounded-lg bg-base-300 grid grid-cols-3 gap-4 px-4 py-6 items-center"
       action={async (formData) => {
         setLoading(true);
         await createDocShareRequest(formData);
@@ -19,7 +19,7 @@ const RequestForm = ({ shareId }: { shareId: string }) => {
         window.location.reload();
       }}
     >
-      <p className="col-span-3 text-3xl font-bold">
+      <p className="col-span-3 xs:text-2xl md:text-3xl font-bold">
         Send request for new access link
       </p>
       <p className="col-span-3 divider mt-0" />
@@ -29,7 +29,7 @@ const RequestForm = ({ shareId }: { shareId: string }) => {
         value={shareId}
         className="input input-bordered"
       />
-      <p className="text-xl font-bold">Name: </p>
+      <p className="xs:text-md md:text-lg lg:text-xl font-bold">Name: </p>
       <input
         type="text"
         className="col-span-2 input input-bordered"
@@ -37,7 +37,7 @@ const RequestForm = ({ shareId }: { shareId: string }) => {
         required
       />
 
-      <p className="text-xl font-bold">Email: </p>
+      <p className="xs:text-md md:text-lg lg:text-xl font-bold">Email: </p>
       <input
         type="email"
         name="email"
@@ -45,7 +45,7 @@ const RequestForm = ({ shareId }: { shareId: string }) => {
         className="col-span-2 input input-bordered"
       />
 
-      <p className="text-xl font-bold">Message: </p>
+      <p className="xs:text-md md:text-lg lg:text-xl font-bold">Message: </p>
       <textarea
         name="message"
         id="message"

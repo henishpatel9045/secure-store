@@ -39,6 +39,7 @@ export default async function ShareDocView({
       {doc && shareDoc.expireAt.valueOf() > Date.now() ? (
         <ShareDoc
           data={{
+            shareId: shareDoc.id,
             docName: doc.name,
             fileName: doc.fileName,
             fileType: doc.fileType,

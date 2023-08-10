@@ -2,6 +2,16 @@
 
 import { bytesToSize } from "@/helpers/helper";
 import Timer from "./Timer";
+import {
+  HiDocumentDuplicate,
+  HiDocumentReport,
+  HiOutlineDocumentDownload,
+  HiOutlineDownload,
+  HiOutlineViewBoards,
+  HiOutlineViewList,
+  HiViewGrid,
+} from "react-icons/hi";
+import Link from "next/link";
 
 const GridLabel = ({ value }: { value: string }) => {
   return <p className="xs:text-md md:text-lg lg:text-xl font-bold">{value}</p>;
@@ -11,6 +21,7 @@ const ShareDoc = ({
   data,
 }: {
   data: {
+    shareId: string;
     expireAt: number;
     docName: string;
     fileName: string;
@@ -51,6 +62,21 @@ const ShareDoc = ({
           window.location.reload();
         }}
       />
+
+      <Link
+        target="_blank"
+        href={"/api/share/" + data.shareId}
+        className="btn btn-neutral col-span-2 mt-4"
+      >
+        <HiOutlineDocumentDownload size={35} />
+      </Link>
+      <Link
+        target="_blank"
+        href={"/api/share/" + data.shareId + "?inline=1"}
+        className="btn btn-neutral col-span-2 mt-4"
+      >
+        <HiViewGrid size={35} />
+      </Link>
     </div>
   );
 };
