@@ -11,12 +11,10 @@ const bytesToSize = (bytes: number): string => {
   return `${value} ${sizes[i]}`;
 };
 
-const generateHash = (password: string): string => {
-  const salt = process.env.SECRET_KEY; // Generate a random salt
-  const hash = createHash("sha256")
-    .update(password + salt)
-    .digest("hex"); // Hash the password with the salt
-  return salt + hash; // Combine salt and hash for storage
+const generatePassKeyHash = (key: string): string => {
+  key = key.trim();
+  key = createHash("sha256").update(String(key)).digest("base64").substr(0, 32);
+  return key;
 };
 
 const sleep = (milliseconds: number): Promise<void> => {
@@ -30,8 +28,6 @@ const sleep = (milliseconds: number): Promise<void> => {
 const algorithm = "aes-256-ctr";
 
 const encrypt = (buffer: Buffer, key: string) => {
-  key = key.trim();
-  key = createHash("sha256").update(String(key)).digest("base64").substr(0, 32);
   // Create an initialization vector
   const iv = randomBytes(16);
   // Create a new cipher using the algorithm, key, and iv
@@ -42,8 +38,6 @@ const encrypt = (buffer: Buffer, key: string) => {
 };
 
 const decrypt = (encrypted: Buffer, key: string) => {
-  key = key.trim();
-  key = createHash("sha256").update(String(key)).digest("base64").substr(0, 32);
   // Get the iv: the first 16 bytes
   const iv = encrypted.slice(0, 16);
   // Get the rest
@@ -55,4 +49,4 @@ const decrypt = (encrypted: Buffer, key: string) => {
   return result;
 };
 
-export { bytesToSize, generateHash, sleep, encrypt, decrypt };
+export { bytesToSize, generatePassKeyHash, sleep, encrypt, decrypt };

@@ -3,7 +3,7 @@
 import { useSession } from "next-auth/react";
 import { ChangeEvent, useState } from "react";
 import { useRouter, redirect } from "next/navigation";
-import { deleteDoc } from "@/helpers/dbCalls";
+import { deleteDoc, deleteEncryptedDoc } from "@/helpers/dbCalls";
 import BtnLoading from "./BtnLoading";
 
 export default function DocForm({
@@ -11,6 +11,7 @@ export default function DocForm({
   docData = { name: "", description: "", fileName: "" },
   isEdit,
   callAction,
+  isEncryptedDoc = false,
 }: {
   children?: React.ReactNode;
   docData?: {
@@ -22,6 +23,7 @@ export default function DocForm({
   };
   isEdit?: boolean;
   callAction: any;
+  isEncryptedDoc?: boolean;
 }) {
   const { data: session } = useSession();
   const [name, setName] = useState(docData.name);
@@ -166,8 +168,14 @@ export default function DocForm({
                   confirm(`Are you sure to delete the doc ${docData.name} ?`)
                 ) {
                   try {
-                    await deleteDoc(docData._id ?? "");
-                  } catch (error) {}
+                    if (isEncryptedDoc) {
+                      await deleteEncryptedDoc(docData._id ?? "");
+                    } else {
+                      await deleteDoc(docData._id ?? "");
+                    }
+                  } catch (error) {
+                    console.log("Error while deleting: ", error);
+                  }
                   router.push("/dashboard/doc");
                 }
               }}

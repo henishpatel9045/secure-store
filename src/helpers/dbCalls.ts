@@ -1,6 +1,10 @@
 "use server";
 
-import { SHARE_LINK_PREFIX, TABLE_PAGE_SIZE } from "@/config/site";
+import {
+  SHARE_LINK_PREFIX,
+  TABLE_PAGE_SIZE,
+  UPLOAD_PATH_PREFIX,
+} from "@/config/site";
 import { prisma } from "@/db";
 import { rmSync } from "fs";
 import { redirect } from "next/navigation";
@@ -46,9 +50,10 @@ const deleteDoc = async (id: string) => {
       id,
     },
   });
+  console.log(doc);
 
   try {
-    rmSync("./public" + doc.path ?? "");
+    rmSync(UPLOAD_PATH_PREFIX + doc.path ?? "");
   } catch (error) {
     console.log(error);
   }
@@ -245,6 +250,19 @@ const createDocShareRequest = async (formData: FormData) => {
   }
 };
 
+const deleteEncryptedDoc = async (id: string) => {
+  const doc = await prisma.encryptedDoc.delete({
+    where: {
+      id,
+    },
+  });
+  try {
+    rmSync(UPLOAD_PATH_PREFIX + doc.path);
+  } catch (error) {
+    console.log("deleteEncryptedDoc: error: ", error);
+  }
+};
+
 export {
   getDocsData,
   getDocData,
@@ -256,4 +274,5 @@ export {
   generateShare,
   deleteShareDoc,
   createDocShareRequest,
+  deleteEncryptedDoc,
 };

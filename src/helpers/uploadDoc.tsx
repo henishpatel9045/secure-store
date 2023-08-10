@@ -4,12 +4,10 @@ import { writeFile, mkdirSync, existsSync, rmSync, rm } from "fs";
 import { redirect } from "next/navigation";
 import { Session } from "next-auth";
 import { UPLOAD_PATH_PREFIX } from "@/config/site";
-import { encrypt, generateHash } from "./helper";
-import { Prisma } from "@prisma/client";
-import { DefaultArgs } from "@prisma/client/runtime/library";
+import { encrypt, generatePassKeyHash } from "./helper";
 
 const dirCheck = (accountId: string) => {
-  const uploadFolderPath = "./public/uploads";
+  const uploadFolderPath = UPLOAD_PATH_PREFIX + "/uploads";
   if (!existsSync(uploadFolderPath)) {
     mkdirSync(uploadFolderPath);
     console.log(`Created ${uploadFolderPath} folder.`);
@@ -68,7 +66,7 @@ const storeFile = async (
     session.user.email +
     (isEncrypted ? "/encDoc/" : "/doc/") +
     doc.id +
-    (isEncrypted ? doc.fileName + ".bin" : file.name);
+    (isEncrypted ? doc.name + ".bin" : file.name);
 
   let buffer = await fileToBuffer(file);
   if (isEncrypted) {
@@ -178,11 +176,26 @@ const updateDoc = async (formData: FormData, session: Session | null) => {
 
   if (file?.size) {
     try {
-      rm(UPLOAD_PATH_PREFIX + prevDoc?.path ?? "", (err) => {
-        console.log("Error deleting current file: ", err);
-      });
       await storeFile(file, session, doc, false);
+      try {
+        rm(UPLOAD_PATH_PREFIX + prevDoc?.path ?? "", (err) => {
+          console.log("Error deleting current file: ", err);
+        });
+      } catch (error) {}
     } catch (error) {
+      await prisma.doc.update({
+        where: {
+          id: doc.id,
+        },
+        data: {
+          name: prevDoc?.name,
+          fileName: prevDoc?.fileName,
+          fileType: prevDoc?.fileType,
+          description: prevDoc?.description,
+          path: prevDoc?.path,
+          size: prevDoc?.size,
+        },
+      });
       console.error(error);
     }
   }
@@ -202,14 +215,14 @@ const saveEncrypted = async (formData: FormData, session: Session | null) => {
       name: docName,
       fileName: file.name,
       description,
-      passKey: passKey,
+      passKey: generatePassKeyHash(passKey),
       fileType: file.type,
       size: file.size,
       userEmail: session?.user?.email,
     },
   });
 
-  await storeFile(file, session, doc, true, passKey);
+  await storeFile(file, session, doc, true, doc.passKey);
   redirect("/dashboard/encryptedDoc");
 };
 
@@ -241,7 +254,7 @@ const updateEncryptedDoc = async (
     data: {
       name: docName,
       fileName: file?.size ? file.name : prevDoc?.fileName,
-      passKey: passKey ? passKey : prevDoc?.passKey,
+      passKey: passKey ? generatePassKeyHash(passKey) : prevDoc?.passKey,
       description,
       fileType: file?.size ? file.type : prevDoc?.fileType,
       size: file?.size ? file.size : prevDoc?.size,
@@ -251,17 +264,27 @@ const updateEncryptedDoc = async (
 
   if (file?.size) {
     try {
-      rm(UPLOAD_PATH_PREFIX + prevDoc?.path ?? "", (err) => {
-        console.log("Error deleting current file: ", err);
-      });
-      await storeFile(
-        file,
-        session,
-        doc,
-        true,
-        passKey ? passKey : prevDoc?.passKey
-      );
+      await storeFile(file, session, doc, true, doc.passKey);
+      try {
+        rm(UPLOAD_PATH_PREFIX + prevDoc?.path ?? "", (err) => {
+          console.log("Error deleting current file: ", err);
+        });
+      } catch (error) {}
     } catch (error) {
+      await prisma.encryptedDoc.update({
+        where: {
+          id: doc.id,
+        },
+        data: {
+          name: prevDoc?.name,
+          fileName: prevDoc?.fileName,
+          fileType: prevDoc?.fileType,
+          description: prevDoc?.description,
+          passKey: prevDoc?.passKey,
+          path: prevDoc?.path,
+          size: prevDoc?.size,
+        },
+      });
       console.error(error);
     }
   }
