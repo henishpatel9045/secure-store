@@ -62,9 +62,7 @@ export default function DashboardLayout({
         </div>
       </div>
       <div
-        className={`${
-         "flex"
-        } lg:flex items-start justify-start h-full w-full overflow-y-auto`}
+        className={`${"flex"} lg:flex items-start justify-start h-full w-full overflow-y-auto`}
       >
         <Sidebar minimized={isOpen} setMinimized={setIsOpen} className="z-50" />
         <div
@@ -75,7 +73,7 @@ export default function DashboardLayout({
           {children}
         </div>
       </div>
-      <Footer isOpen={isOpen} />
+      <Footer />
     </div>
   );
 }

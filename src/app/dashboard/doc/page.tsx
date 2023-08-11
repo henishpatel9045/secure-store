@@ -55,19 +55,23 @@ export default function Page() {
                 Active sharable link for doc already exists.
               </p>
               <div className="grid grid-cols-4 mt-6 gap-4 items-center">
-                <p className="font-bold xs:text-sm md:text-md">ShareLink: </p>
+                <p className="font-bold xs:text-sm md:text-md break-words">
+                  ShareLink:{" "}
+                </p>
                 <Link
                   href={shareDocData?.link ?? ""}
-                  className="col-span-3 text-secondary badge badge-ghost p-3 h-fit"
+                  className="col-span-3 text-secondary badge badge-ghost p-3 h-fit break-words"
                   target="_blank"
                 >
                   {shareDocData?.link}
                 </Link>
-                <p className="font-bold xs:text-sm md:text-md">AccessedFor: </p>
+                <p className="font-bold xs:text-sm md:text-md break-words">
+                  AccessedFor:{" "}
+                </p>
                 <p className="col-span-3 text-secondary badge badge-ghost p-3">
                   {shareDocData?.accessedFor}
                 </p>
-                <p className="font-bold xs:text-sm md:text-md">
+                <p className="font-bold xs:text-sm md:text-md break-words">
                   Remaining Time:{" "}
                 </p>
                 <p className="col-span-3">
@@ -120,24 +124,26 @@ export default function Page() {
                 className="flex flex-col items-center gap-6"
               >
                 <input type="hidden" name="docId" value={modelDocId ?? ""} />
-                <div className="grid grid-cols-3 gap-4 w-full">
+                <div className="grid grid-cols-3 gap-4 w-full items-center">
                   <p>DocId: </p>
                   <p className="col-span-2 text-secondary badge badge-ghost p-3 h-fit relative">
+                    <span>{modelDocId}</span>
                     <button
-                      className="btn btn-ghost absolute top-2 right-3 p-2"
-                      onClick={() => {
-                        navigator.clipboard.writeText(modelDocId ?? "");
+                      type="button"
+                      className="btn btn-ghost top-2 z-10 right-3 p-2"
+                      onClick={async () => {
+                        await navigator.clipboard.writeText(modelDocId ?? "");
+                        toast.info(`DocID ${modelDocId} copied to clipboard.`);
                       }}
                     >
                       <HiOutlineClipboard size={15} color="#FFF" />
                     </button>
-                    <span>{modelDocId}</span>
                   </p>
                   <p>ExpiresAt: </p>
                   <input
                     type="datetime-local"
                     name="expiresAt"
-                    className="col-span-2 p-2 max-w-full"
+                    className="col-span-2 max-w-full badge badge-ghost p-3 h-fit"
                     required
                     min={new Date().toISOString().slice(0, 16)}
                     max={new Date(Date.now() + 100 * 24 * 60 * 60 * 1000)

@@ -2,19 +2,15 @@
 
 import { bytesToSize } from "@/helpers/helper";
 import Timer from "./Timer";
-import {
-  HiDocumentDuplicate,
-  HiDocumentReport,
-  HiOutlineDocumentDownload,
-  HiOutlineDownload,
-  HiOutlineViewBoards,
-  HiOutlineViewList,
-  HiViewGrid,
-} from "react-icons/hi";
+import { HiOutlineDocumentDownload, HiViewGrid } from "react-icons/hi";
 import Link from "next/link";
 
 const GridLabel = ({ value }: { value: string }) => {
-  return <p className="xs:text-md md:text-lg lg:text-xl font-bold">{value}</p>;
+  return (
+    <p className="xs:text-md md:text-lg lg:text-xl font-bold break-words text-ellipsis">
+      {value}:
+    </p>
+  );
 };
 
 const ShareDoc = ({
@@ -35,22 +31,22 @@ const ShareDoc = ({
       <p className="divider col-span-4 mt-0" />
 
       <GridLabel value="DocName" />
-      <p className="text-secondary xs:text-md md:text-lg lg:text-xl col-span-3 before:content-[':'] before:text-white before:font-bold before:-ml-1 before:mr-2">
+      <p className="text-secondary xs:text-md md:text-lg lg:text-xl col-span-3 break-words">
         {data?.docName}
       </p>
 
       <GridLabel value="FileName" />
-      <p className="text-secondary xs:text-md md:text-lg lg:text-xl col-span-3 before:content-[':'] before:text-white before:font-bold before:-ml-1 before:mr-2">
+      <p className="text-secondary xs:text-md md:text-lg lg:text-xl col-span-3 break-words">
         {data?.fileName}
       </p>
 
       <GridLabel value="FileType" />
-      <p className="text-secondary xs:text-md md:text-lg lg:text-xl col-span-3 before:content-[':'] before:text-white before:font-bold before:-ml-1 before:mr-2">
+      <p className="text-secondary xs:text-md md:text-lg lg:text-xl col-span-3 break-words">
         {data?.fileType}
       </p>
 
       <GridLabel value="FileSize" />
-      <p className="text-secondary xs:text-md md:text-lg lg:text-xl col-span-3 before:content-[':'] before:text-white before:font-bold before:-ml-1 before:mr-2">
+      <p className="text-secondary xs:text-md md:text-lg lg:text-xl col-span-3 break-words">
         {bytesToSize(data.size)}
       </p>
 

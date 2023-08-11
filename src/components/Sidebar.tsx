@@ -21,13 +21,13 @@ const Sidebar = ({
   const pathname = usePathname();
 
   useEffect(() => {
-    if (window.innerWidth <= 550) setMinimized((val) => !val);
+    if (window.innerWidth <= 550) setMinimized(true);
   }, [pathname]);
 
   return (
     <div
       className={`z-50 bg-base-200 h-full ${
-        minimized ? "xs:-ml-16 lg:ml-0 lg:w-16" : "xs:w-full md:w-48"
+        minimized ? "xs:-ml-52 lg:ml-0 lg:w-16" : "xs:w-full md:w-48"
       } transition-all fixed ${className}`}
     >
       <nav className="text-white pt-4 flex flex-col items-center justify-between w-full h-full">
@@ -54,7 +54,7 @@ const Sidebar = ({
           {/* <p className="divider" /> */}
           <div>
             <p
-              className="w-full btn py-6 h-fit btn-ghost transition-all"
+              className="w-full btn py-4 h-fit btn-ghost transition-all"
               onClick={() => {
                 setMinimized(!minimized);
               }}

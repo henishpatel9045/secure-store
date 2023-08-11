@@ -6,7 +6,6 @@ import { toast } from "react-toastify";
 import { useRouter, redirect } from "next/navigation";
 import { deleteDoc, deleteEncryptedDoc } from "@/helpers/dbCalls";
 import BtnLoading from "./BtnLoading";
-import { error } from "console";
 
 export default function DocForm({
   children,
@@ -61,26 +60,22 @@ export default function DocForm({
       </h1>
       <p className="divider mt-0" />
       <form
+        onSubmitCapture={() => setLoading(true)}
         action={async (formData: FormData) => {
           setLoading(true);
           const resPromise = callAction(formData, session);
           await toast.promise(resPromise, {
             pending: "Uploading file...",
             success: (() => {
-              if (isEdit) {
-                router.refresh();
-              }
               return "Doc added successfully.";
             })(),
             error: (() => {
-              if (isEdit) {
-                router.refresh();
-              }
               return "Error occurred while uploading file.";
             })(),
           });
           setLoading(false);
-          redirect("/dashboard/doc");
+          if (isEdit) router.refresh();
+          else redirect("/dashboard/doc");
         }}
         className="flex flex-col w-full gap-4"
       >
@@ -154,15 +149,7 @@ export default function DocForm({
             isEdit ? "grid-cols-3" : "grid-cols-2"
           } gap-4 xs:mt-10 sm:mt-20`}
         >
-          <button
-            type="submit"
-            className="btn btn-info"
-            disabled={loading}
-            // onSubmit={() => {
-            //   setLoading(true);
-            //   return true;
-            // }}
-          >
+          <button type="submit" className="btn btn-info" disabled={loading}>
             {loading ? <BtnLoading /> : "Save"}
           </button>
           <button type="reset" className="btn btn-warning" disabled={loading}>
