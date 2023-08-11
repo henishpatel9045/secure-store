@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ImIndentDecrease, ImIndentIncrease } from "react-icons/im";
 import { SideBarData } from "@/config/navigation";
 import { usePathname } from "next/navigation";
+import { useEffect, useSyncExternalStore } from "react";
 
 const Sidebar = ({
   minimized,
@@ -19,10 +20,14 @@ const Sidebar = ({
 }) => {
   const pathname = usePathname();
 
+  useEffect(() => {
+    if (window.innerWidth <= 550) setMinimized((val) => !val);
+  }, [pathname]);
+
   return (
     <div
       className={`z-50 bg-base-200 h-full ${
-        minimized ? "xs:-ml-16 lg:ml-0 lg:w-16" : "w-48"
+        minimized ? "xs:-ml-16 lg:ml-0 lg:w-16" : "xs:w-full md:w-48"
       } transition-all fixed ${className}`}
     >
       <nav className="text-white pt-4 flex flex-col items-center justify-between w-full h-full">
@@ -46,18 +51,18 @@ const Sidebar = ({
           })}
         </ul>
         <div className="absolute bottom-20 w-full">
-          <p className="divider" />
+          {/* <p className="divider" /> */}
           <div>
             <p
-              className="w-full btn btn-ghost transition-all"
+              className="w-full btn py-6 h-fit btn-ghost transition-all"
               onClick={() => {
                 setMinimized(!minimized);
               }}
             >
               {!minimized ? (
-                <ImIndentDecrease className="w-8 h-8" />
+                <ImIndentDecrease className="w-6 h-6" />
               ) : (
-                <ImIndentIncrease className="w-8 h-8" />
+                <ImIndentIncrease className="w-6 h-6" />
               )}
             </p>
           </div>

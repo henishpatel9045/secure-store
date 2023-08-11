@@ -137,7 +137,7 @@ export default function Page() {
                   <input
                     type="datetime-local"
                     name="expiresAt"
-                    className="col-span-2 p-2"
+                    className="col-span-2 p-2 max-w-full"
                     required
                     min={new Date().toISOString().slice(0, 16)}
                     max={new Date(Date.now() + 100 * 24 * 60 * 60 * 1000)

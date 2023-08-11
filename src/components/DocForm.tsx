@@ -2,9 +2,11 @@
 
 import { useSession } from "next-auth/react";
 import { ChangeEvent, useState } from "react";
+import { toast } from "react-toastify";
 import { useRouter, redirect } from "next/navigation";
 import { deleteDoc, deleteEncryptedDoc } from "@/helpers/dbCalls";
 import BtnLoading from "./BtnLoading";
+import { error } from "console";
 
 export default function DocForm({
   children,
@@ -29,7 +31,6 @@ export default function DocForm({
   const [name, setName] = useState(docData.name);
   const [description, setDescription] = useState(docData.description);
   const [loading, setLoading] = useState(false);
-  const [showToast, setShowToast] = useState(false);
   const router = useRouter();
 
   const handleChange = (
@@ -48,29 +49,38 @@ export default function DocForm({
 
   return (
     <div className="flex-1 p-4 md:p-6">
-      {showToast && (
+      {/* {showToast && (
         <div className="toast toast-top toast-center">
           <div className="alert alert-success">
             <span>{isEdit ? "Document updated." : "Document saved"}</span>
           </div>
         </div>
-      )}
+      )} */}
       <h1 className="text-2xl font-bold">
         {isEdit ? "Edit" : "Add New"} Document
       </h1>
       <p className="divider mt-0" />
       <form
-        action={async (formData) => {
+        action={async (formData: FormData) => {
           setLoading(true);
-          await callAction(formData, session);
-          if (isEdit) {
-            setLoading(false);
-            setShowToast(true);
-            setTimeout(() => {
-              setShowToast(false);
-            }, 2000);
-            router.refresh();
-          }
+          const resPromise = callAction(formData, session);
+          await toast.promise(resPromise, {
+            pending: "Uploading file...",
+            success: (() => {
+              if (isEdit) {
+                router.refresh();
+              }
+              return "Doc added successfully.";
+            })(),
+            error: (() => {
+              if (isEdit) {
+                router.refresh();
+              }
+              return "Error occurred while uploading file.";
+            })(),
+          });
+          setLoading(false);
+          redirect("/dashboard/doc");
         }}
         className="flex flex-col w-full gap-4"
       >
@@ -148,10 +158,10 @@ export default function DocForm({
             type="submit"
             className="btn btn-info"
             disabled={loading}
-            onSubmit={() => {
-              setLoading(true);
-              return true;
-            }}
+            // onSubmit={() => {
+            //   setLoading(true);
+            //   return true;
+            // }}
           >
             {loading ? <BtnLoading /> : "Save"}
           </button>
@@ -169,10 +179,24 @@ export default function DocForm({
                 ) {
                   try {
                     if (isEncryptedDoc) {
-                      await deleteEncryptedDoc(docData._id ?? "");
+                      setLoading(true);
+                      const resPromise = deleteEncryptedDoc(docData._id ?? "");
+                      await toast.promise(resPromise, {
+                        pending: "Deleting Document.",
+                        success: "Document deleted successfully.",
+                        error: "Error deleting document.",
+                      });
+                      setLoading(false);
                       router.push("/dashboard/encryptedDoc");
                     } else {
-                      await deleteDoc(docData._id ?? "");
+                      setLoading(true);
+                      const resPromise = deleteDoc(docData._id ?? "");
+                      await toast.promise(resPromise, {
+                        pending: "Deleting Document.",
+                        success: "Document deleted successfully.",
+                        error: "Error deleting document.",
+                      });
+                      setLoading(false);
                       router.push("/dashboard/doc");
                     }
                   } catch (error) {

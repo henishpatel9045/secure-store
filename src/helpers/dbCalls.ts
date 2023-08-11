@@ -7,7 +7,6 @@ import {
 } from "@/config/site";
 import { prisma } from "@/db";
 import { rmSync } from "./fileStorageFunctions";
-import { redirect } from "next/navigation";
 
 const getDocsData = async (email: string) => {
   const docsData = await prisma.doc.findMany({
@@ -21,28 +20,31 @@ const getDocsData = async (email: string) => {
       fileName: true,
       path: true,
     },
-  });
-
-  return docsData;
-};
-
-const getDocData = async (email: string) => {
-  const docsData = await prisma.doc.findMany({
-    where: {
-      userEmail: email,
-    },
-    select: {
-      id: true,
-      name: true,
-      fileType: true,
-      fileName: true,
-      description: true,
-      path: true,
+    orderBy: {
+      createdAt: "desc",
     },
   });
 
   return docsData;
 };
+
+// const getDocData = async (email: string) => {
+//   const docsData = await prisma.doc.findMany({
+//     where: {
+//       userEmail: email,
+//     },
+//     select: {
+//       id: true,
+//       name: true,
+//       fileType: true,
+//       fileName: true,
+//       description: true,
+//       path: true,
+//     },
+//   });
+
+//   return docsData;
+// };
 
 const deleteDoc = async (id: string) => {
   const doc = await prisma.doc.delete({
@@ -265,7 +267,7 @@ const deleteEncryptedDoc = async (id: string) => {
 
 export {
   getDocsData,
-  getDocData,
+  // getDocData,
   deleteDoc,
   getEncryptedDocsData,
   getUserData,

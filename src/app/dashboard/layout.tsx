@@ -61,13 +61,14 @@ export default function DashboardLayout({
           </ul>
         </div>
       </div>
-      <div className="flex items-start justify-start h-full w-full overflow-y-auto">
-        <Sidebar
-          minimized={isOpen}
-          setMinimized={setIsOpen}
-        />
+      <div
+        className={`${
+         "flex"
+        } lg:flex items-start justify-start h-full w-full overflow-y-auto`}
+      >
+        <Sidebar minimized={isOpen} setMinimized={setIsOpen} className="z-50" />
         <div
-          className={`flex-1 h-full overflow-auto ${
+          className={`flex-1 h-full w-full overflow-auto ${
             isOpen ? "xs:ml-0 lg:ml-16" : "ml-48"
           }`}
         >

@@ -45,37 +45,37 @@ export default function Timer({
   return (
     <div
       className={
-        "grid grid-flow-col xs:gap-2 md:gap-4 text-center auto-cols-max " +
+        "max-w-full grid grid-flow-col xs:gap-2 md:gap-4 text-center auto-cols-max " +
         className
       }
     >
       {days ? (
-        <div className="flex flex-col p-2 bg-neutral rounded-box text-neutral-content">
-          <span className="countdown font-mono xs:text-3xl md:text-5xl">
+        <div className="flex flex-col p-2 bg-neutral rounded-box text-neutral-content items-center">
+          <span className="countdown font-mono xs:text-xl sm:text-2xl md:text-5xl">
             <TimerElement value={days} />
           </span>
-          days
+          DD
         </div>
       ) : (
         <></>
       )}
-      <div className="flex flex-col p-2 bg-neutral rounded-box text-neutral-content">
-        <span className="countdown font-mono xs:text-3xl md:text-5xl">
+      <div className="flex flex-col p-2 bg-neutral rounded-box text-neutral-content items-center">
+        <span className="countdown font-mono xs:text-xl sm:text-2xl md:text-5xl">
           <TimerElement value={hours} />
         </span>
-        hours
+        HH
       </div>
-      <div className="flex flex-col p-2 bg-neutral rounded-box text-neutral-content">
-        <span className="countdown font-mono xs:text-3xl md:text-5xl">
+      <div className="flex flex-col p-2 bg-neutral rounded-box text-neutral-content items-center">
+        <span className="countdown font-mono xs:text-xl sm:text-2xl md:text-5xl">
           <TimerElement value={minutes} />
         </span>
-        min
+        MM
       </div>
-      <div className="flex flex-col p-2 bg-neutral rounded-box text-neutral-content">
-        <span className="countdown font-mono xs:text-3xl md:text-5xl">
+      <div className="flex flex-col p-2 bg-neutral rounded-box text-neutral-content items-center">
+        <span className="countdown font-mono xs:text-xl sm:text-2xl md:text-5xl">
           <TimerElement value={seconds} />
         </span>
-        sec
+        SS
       </div>
     </div>
   );

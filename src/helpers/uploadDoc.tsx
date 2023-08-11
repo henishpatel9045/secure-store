@@ -151,7 +151,6 @@ const saveDoc = async (formData: FormData, session: Session | null) => {
   });
 
   await storeFile(file, session, doc, false);
-  redirect("/dashboard/doc");
 };
 
 const updateDoc = async (formData: FormData, session: Session | null) => {
@@ -190,7 +189,7 @@ const updateDoc = async (formData: FormData, session: Session | null) => {
   if (file?.size) {
     try {
       await storeFile(file, session, doc, false);
-      try { 
+      try {
         await rmSync(prevDoc?.path ?? "");
       } catch (error) {}
     } catch (error) {

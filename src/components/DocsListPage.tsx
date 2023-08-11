@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { HiOutlineInformationCircle } from "react-icons/hi";
+import Loading from "./Loading";
 
 export default function DocsListPage({
   children,
@@ -38,10 +39,12 @@ export default function DocsListPage({
       path: string | null;
     }[]
   >([]);
+  const [fetched, setFetched] = useState(false);
 
   const getData = async () => {
     if (status !== "authenticated") return;
     setDocsData(await getDocsData(session.user?.email ?? ""));
+    setFetched(true);
   };
 
   useEffect(() => {
@@ -49,20 +52,26 @@ export default function DocsListPage({
   }, [status]);
 
   return (
-    <div className="flex-1 relative flex flex-col h-full p-6">
-      <Link
-        href={`/dashboard/${isEncryptedPage ? "encryptedDoc" : "doc"}/addNew`}
-        className="btn btn-secondary text-white absolute top-4 right-4 z-10 shadow-gray-50"
-      >
-        Add Doc
-      </Link>
-      <div className="w-full text-start text-2xl font-bold">
-        {isEncryptedPage ? "Your Encrypted Docs" : "Your Documents"}
+    <div className="flex-1 relative flex flex-col h-full p-6 w-full">
+      <div className="z-10 bg-black w-full -p-2 flex flex-col items-center justify-between">
+        <div className="flex items-center justify-between w-full">
+          <div className="w-full text-start text-2xl font-bold">
+            {isEncryptedPage ? "Encrypted Docs" : "Documents"}
+          </div>
+          <Link
+            href={`/dashboard/${
+              isEncryptedPage ? "encryptedDoc" : "doc"
+            }/addNew`}
+            className="btn btn-accent xs:btn-sm md:btn-md text-white shadow-gray-50"
+          >
+            Add Doc
+          </Link>
+        </div>
+        <div className="w-full divider mt-2" />
       </div>
-      <div className="divider mt-2" />
-      <div className="relative w-full grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 grid-flow-row auto-rows-auto">
-        {docsData.length !== 0 ? (
-          docsData.map((item, index) => (
+      {docsData.length !== 0 ? (
+        <div className="relative w-full grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 grid-flow-row auto-rows-auto">
+          {docsData.map((item, index) => (
             // eslint-disable-next-line react/no-array-index-key
             <DocCard
               key={`doc-${index}`}
@@ -74,15 +83,17 @@ export default function DocsListPage({
               isEncryptedDoc={isEncryptedPage}
               {...docCardProps}
             />
-          ))
-        ) : (
-          <div className="absolute top-0 left-0 text-center w-full h-full flex items-center justify-center">
-            <span className="flex gap-4 justify-center items-center text-3xl">
-              <HiOutlineInformationCircle size={30} /> No Document
-            </span>
-          </div>
-        )}
-      </div>
+          ))}
+        </div>
+      ) : fetched ? (
+        <div className="text-center w-full h-full flex items-center justify-center">
+          <span className="flex gap-4 justify-center items-center text-3xl">
+            <HiOutlineInformationCircle size={30} /> No Document
+          </span>
+        </div>
+      ) : (
+        <Loading />
+      )}
       {children}
     </div>
   );

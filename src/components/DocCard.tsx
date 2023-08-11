@@ -85,11 +85,19 @@ export default function DocCard({
                   id +
                   "?passKey=" +
                   passKey;
-                const res = await fetch(url, {
+                const resPromise = fetch(url, {
                   headers: new Headers({
                     Authorization: JSON.stringify(session?.user ?? "{}"),
                   }),
                 });
+                toast.promise(resPromise, {
+                  pending: `Fetching document ${fileName}.`,
+                  success: "Document successfully downloaded.",
+                  error: "Error downloading document.",
+                });
+
+                const res = await resPromise;
+
                 if (res.ok) {
                   const blobUrl = URL.createObjectURL(await res.blob());
                   const link = document.createElement("a");
