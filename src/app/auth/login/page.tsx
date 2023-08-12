@@ -13,7 +13,7 @@ export default function Login() {
   return (
     <div className="relative w-full h-full bg-base-200 px-4 flex items-center justify-center">
       <div className="xs:w-11/12 md:w-8/12 lg:w-6/12 flex flex-col items-center justify-center gap-4 bg-black py-8 px-6 rounded-xl">
-        <div className="flex flex-col gap-2 items-center justify-center w-full">
+        {/* <div className="flex flex-col gap-2 items-center justify-center w-full">
           <input
             type="email"
             name="email"
@@ -44,7 +44,7 @@ export default function Login() {
             <ImMail3 /> Continue with email
           </button>
         </div>
-        <div className="divider divide-neutral text-neutral font-bold">OR</div>
+        <div className="divider divide-neutral text-neutral font-bold">OR</div> */}
         <div className="w-full flex flex-col gap-2 items-center">
           <button
             className="btn btn-outline btn-neutral w-full"
