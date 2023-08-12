@@ -49,15 +49,20 @@ export default function Login() {
           <button
             className="btn btn-outline btn-neutral w-full"
             disabled={loading}
+            onClick={() =>
+              signIn("google", {
+                callbackUrl: "/dashboard/profile",
+              })
+            }
           >
             <ImGoogle /> Continue with Google
           </button>
-          <button
+          {/* <button
             className="btn btn-outline btn-neutral w-full"
             disabled={true}
           >
             <ImGithub /> Continue with GitHub
-          </button>
+          </button> */}
         </div>
       </div>
     </div>
