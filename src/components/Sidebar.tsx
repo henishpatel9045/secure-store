@@ -30,7 +30,7 @@ const Sidebar = ({
         minimized ? "xs:-ml-52 lg:ml-0 lg:w-16" : "xs:w-full md:w-48"
       } transition-all fixed ${className}`}
     >
-      <nav className="text-white pt-4 flex flex-col items-center justify-between w-full h-full">
+      <nav className="text-white pt-4 flex flex-col items-center justify-between w-full h-full relative">
         <ul className="w-full">
           {SideBarData.map((item, index) => {
             return (
@@ -54,7 +54,7 @@ const Sidebar = ({
           {/* <p className="divider" /> */}
           <div>
             <p
-              className="w-full btn py-4 h-fit btn-ghost transition-all"
+              className="w-full btn h-fit btn-ghost transition-all py-6"
               onClick={() => {
                 setMinimized(!minimized);
               }}

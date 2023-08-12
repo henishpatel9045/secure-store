@@ -49,4 +49,17 @@ const decrypt = (encrypted: Buffer, key: string) => {
   return result;
 };
 
-export { bytesToSize, generatePassKeyHash, sleep, encrypt, decrypt };
+const generateAvatarText = (name: string) => {
+  name = name.trim();
+  let n = name.split(" ");
+  return n?.[0][0].toUpperCase() + n?.[1][0].toUpperCase();
+};
+
+export {
+  bytesToSize,
+  generatePassKeyHash,
+  sleep,
+  encrypt,
+  decrypt,
+  generateAvatarText,
+};

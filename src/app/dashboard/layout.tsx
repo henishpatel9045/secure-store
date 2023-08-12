@@ -6,6 +6,7 @@ import { signOut, useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import Loading from "@/components/Loading";
+import { generateAvatarText } from "@/helpers/helper";
 
 export default function DashboardLayout({
   children,
@@ -34,14 +35,29 @@ export default function DashboardLayout({
           </button>
         </div>
         <div className="dropdown dropdown-end">
-          <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
-            <div className="w-10 rounded-full">
-              <img
-                src={session.user?.image ?? ""}
-                alt={session.user?.email ?? ""}
-              />
-            </div>
-          </label>
+          <div
+            tabIndex={0}
+            className={`btn btn-ghost btn-circle avatar min-w-10 rounded-full ${
+              session.user?.image ? "" : "placeholder:"
+            }`}
+          >
+            {session.user?.image ? (
+              <div className="w-10">
+                <img
+                  src={session.user?.image}
+                  alt={session.user?.email ?? ""}
+                />
+              </div>
+            ) : (
+              <div className="text-neutral-content rounded-full w-full">
+                <span className=" text-xl h-full flex items-center justify-center">
+                  {generateAvatarText(
+                    session.user?.name ?? session.user?.email ?? ""
+                  )}
+                </span>
+              </div>
+            )}
+          </div>
           <ul
             tabIndex={0}
             className="menu menu-sm dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52 z-30"
@@ -62,7 +78,7 @@ export default function DashboardLayout({
         </div>
       </div>
       <div
-        className={`${"flex"} lg:flex items-start justify-start h-full w-full overflow-y-auto`}
+        className={`${"flex"} lg:flex items-start justify-start h-full w-full overflow-y-scroll`}
       >
         <Sidebar minimized={isOpen} setMinimized={setIsOpen} className="z-50" />
         <div

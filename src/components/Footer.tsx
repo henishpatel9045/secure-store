@@ -11,13 +11,13 @@ export default function Footer() {
     >
       <div className=" flex flex-col justify-between">
         <div className="flex justify-between gap-4">
-          <a className="link link-hover" href={GITHUB_URL}>
+          <a className="link link-hover" target="_blank" href={GITHUB_URL}>
             <ImGithub className="xs:w-6 xs:h-6" />
           </a>
-          <a className="link link-hover" href={WHATSAPP_URL}>
+          <a className="link link-hover" target="_blank" href={WHATSAPP_URL}>
             <ImWhatsapp className="xs:w-6 xs:h-6" />
           </a>
-          <a className="link link-hover" href={LINKEDIN_URL}>
+          <a className="link link-hover" target="_blank" href={LINKEDIN_URL}>
             <ImLinkedin className="xs:w-6 xs:h-6" />
           </a>
         </div>
