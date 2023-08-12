@@ -28,24 +28,29 @@ const handler = NextAuth({
   ],
   callbacks: {
     async signIn({ user, account, profile, email, credentials }) {
-      // const accountId = account?.providerAccountId ?? "";
-      // const name = user?.name ?? "";
-      // if (!(user && user.email)) return false;
-
-      // await prisma.user.upsert({
-      //   where: {
-      //     email: user.email ?? "",
-      //   },
-      //   update: {
-      //     name,
-      //     googleId: accountId,
-      //   },
-      //   create: {
-      //     email: user.email,
-      //     name,
-      //     googleId: accountId,
-      //   },
-      // });
+      try {
+        const accountId = account?.providerAccountId ?? "";
+        const name = user?.name ?? "";
+        if (!(user && user.email)) return false;
+  
+        await prisma.user.upsert({
+          where: {
+            email: user.email ?? "",
+          },
+          update: {
+            name,
+            googleId: accountId,
+          },
+          create: {
+            email: user.email,
+            name,
+            googleId: accountId,
+          },
+        });
+      } catch (error) {
+        console.log("Error while signIn callback. ERROR: ", error);
+        
+      }
 
       return true;
     },
