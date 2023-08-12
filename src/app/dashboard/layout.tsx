@@ -46,6 +46,7 @@ export default function DashboardLayout({
                 <img
                   src={session.user?.image}
                   alt={session.user?.email ?? ""}
+                  className="rounded-full w-full h-full"
                 />
               </div>
             ) : (

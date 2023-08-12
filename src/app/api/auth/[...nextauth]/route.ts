@@ -51,7 +51,6 @@ const handler = NextAuth({
         console.log("Error while signIn callback. ERROR: ", error);
         
       }
-
       return true;
     },
   },

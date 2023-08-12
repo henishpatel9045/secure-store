@@ -92,7 +92,7 @@ const ProfilePage = () => {
           <img
             src={session?.user?.image}
             alt={session?.user?.name ?? ""}
-            className="w-full h-full"
+            className="w-full h-full rounded-full"
           />
         ) : (
           <div className="text-neutral-content rounded-full bg-base-content xs:w-20 xs:h-20 md:w-40 md:h-40 ">
