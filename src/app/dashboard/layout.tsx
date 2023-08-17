@@ -7,6 +7,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import Loading from "@/components/Loading";
 import { generateAvatarText } from "@/helpers/helper";
+import { IoNotifications } from "react-icons/io5";
 
 export default function DashboardLayout({
   children,
@@ -34,48 +35,72 @@ export default function DashboardLayout({
             SecureStore
           </button>
         </div>
-        <div className="dropdown dropdown-end">
-          <div
-            tabIndex={0}
-            className={`btn btn-ghost btn-circle avatar min-w-10 rounded-full ${
-              session.user?.image ? "" : "placeholder:"
-            }`}
-          >
-            {session.user?.image ? (
-              <div className="w-10">
-                <img
-                  src={session.user?.image}
-                  alt={session.user?.email ?? ""}
-                  className="rounded-full w-full h-full"
-                />
+        <div className="flex-none">
+          <div className="dropdown dropdown-end">
+            <label tabIndex={0} className="btn btn-ghost btn-circle">
+              <div className="indicator">
+                <span className="badge badge-xs indicator-item">8</span>
+                <IoNotifications className="w-4 h-4" />
               </div>
-            ) : (
-              <div className="text-neutral-content rounded-full w-full">
-                <span className=" text-xl h-full flex items-center justify-center">
-                  {generateAvatarText(
-                    session.user?.name ?? session.user?.email ?? ""
-                  )}
-                </span>
-              </div>
-            )}
-          </div>
-          <ul
-            tabIndex={0}
-            className="menu menu-sm dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52 z-30"
-          >
-            <li>
-              <Link href="/dashboard/profile" className="justify-between">
-                Profile
-              </Link>
-            </li>
-            <li
-              onClick={() => {
-                signOut({ callbackUrl: "/auth/login" });
-              }}
+            </label>
+            <div
+              tabIndex={0}
+              className="mt-3 z-[1] card card-compact dropdown-content w-52 bg-base-100 shadow"
             >
-              <a>Logout</a>
-            </li>
-          </ul>
+              <div className="card-body">
+                <span className="font-bold text-lg">8 Items</span>
+                <span className="text-info">Subtotal: $999</span>
+                <div className="card-actions">
+                  <button className="btn btn-primary btn-block">
+                    View cart
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="dropdown dropdown-end">
+            <div
+              tabIndex={0}
+              className={`btn btn-ghost btn-circle avatar min-w-10 rounded-full ${
+                session.user?.image ? "" : "placeholder:"
+              }`}
+            >
+              {session.user?.image ? (
+                <div className="w-10">
+                  <img
+                    src={session.user?.image}
+                    alt={session.user?.email ?? ""}
+                    className="rounded-full w-full h-full"
+                  />
+                </div>
+              ) : (
+                <div className="text-neutral-content rounded-full w-full">
+                  <span className=" text-xl h-full flex items-center justify-center">
+                    {generateAvatarText(
+                      session.user?.name ?? session.user?.email ?? ""
+                    )}
+                  </span>
+                </div>
+              )}
+            </div>
+            <ul
+              tabIndex={0}
+              className="menu menu-sm dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52 z-30"
+            >
+              <li>
+                <Link href="/dashboard/profile" className="justify-between">
+                  Profile
+                </Link>
+              </li>
+              <li
+                onClick={() => {
+                  signOut({ callbackUrl: "/auth/login" });
+                }}
+              >
+                <a>Logout</a>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
       <div
