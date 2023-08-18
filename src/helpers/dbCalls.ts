@@ -4,7 +4,6 @@ import {
   DATE_ISO_ADJUST,
   SHARE_LINK_PREFIX,
   TABLE_PAGE_SIZE,
-  UPLOAD_PATH_PREFIX,
 } from "@/config/site";
 import { prisma } from "@/db";
 import { rmSync } from "./fileStorageFunctions";
@@ -197,7 +196,7 @@ const checkActiveDocShare = async (docId: string) => {
       exists: true,
       doc: {
         id: doc.id,
-        expiredAt: doc.expireAt,
+        expiredAt: doc.expireAt.valueOf() + DATE_ISO_ADJUST,
         link: SHARE_LINK_PREFIX + doc.id,
         accessedFor: doc.accessed,
       },
@@ -225,7 +224,7 @@ const generateShare = async (formData: FormData) => {
   console.log();
   return {
     id: shareDoc.id,
-    expiredAt: shareDoc.expireAt,
+    expiredAt: shareDoc.expireAt.valueOf() + DATE_ISO_ADJUST,
     link: SHARE_LINK_PREFIX + shareDoc.id,
     accessedFor: shareDoc.accessed,
   };
@@ -282,6 +281,7 @@ const getNotifications = async (email: string) => {
       createdAt: "desc",
     },
     select: {
+      id: true,
       senderName: true,
       senderEmail: true,
       createdAt: true,
@@ -297,6 +297,17 @@ const getNotifications = async (email: string) => {
   return data;
 };
 
+const markNoificationAsRead = async (id: number) => {
+  await prisma.docShareRequest.update({
+    where: {
+      id,
+    },
+    data: {
+      visited: true,
+    },
+  });
+};
+
 export {
   getDocsData,
   // getDocData,
@@ -310,4 +321,5 @@ export {
   createDocShareRequest,
   deleteEncryptedDoc,
   getNotifications,
+  markNoificationAsRead,
 };

@@ -17,7 +17,7 @@ export default function Page() {
   const [shareDocData, setShareDocData] = useState<{
     id: string;
     link: string;
-    expiredAt: Date;
+    expiredAt: number;
     accessedFor: number;
   } | null>(null);
   const [loading, setLoading] = useState(false);
@@ -77,13 +77,7 @@ export default function Page() {
                 </p>
                 <p className="col-span-3">
                   <Timer
-                    time={
-                      (new Date(
-                        shareDocData?.expiredAt.valueOf() ?? 0
-                      ).valueOf() -
-                        Date.now()) /
-                      1000
-                    }
+                    time={((shareDocData?.expiredAt ?? 0) - Date.now()) / 1000}
                   />
                 </p>
                 <button
@@ -152,12 +146,8 @@ export default function Page() {
                     name="expiresAt"
                     className="col-span-2 max-w-full badge badge-ghost p-3 h-fit"
                     required
-                    min={new Date(Date.now() + DATE_ISO_ADJUST())
-                      .toISOString()
-                      .slice(0, 16)}
-                    max={new Date(
-                      Date.now() + DATE_ISO_ADJUST() + 100 * 24 * 60 * 60 * 1000
-                    )
+                    min={new Date(Date.now()).toISOString().slice(0, 16)}
+                    max={new Date(Date.now() + 100 * 24 * 60 * 60 * 1000)
                       .toISOString()
                       .slice(0, 16)}
                   />

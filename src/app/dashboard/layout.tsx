@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Sidebar from "@/components/Sidebar";
 import Footer from "@/components/Footer";
 import { signOut, useSession } from "next-auth/react";
@@ -9,25 +9,42 @@ import Loading from "@/components/Loading";
 import { generateAvatarText } from "@/helpers/helper";
 import { IoNotifications } from "react-icons/io5";
 import { ImCheckmark } from "react-icons/im";
-import { getNotifications } from "@/helpers/dbCalls";
+import { getNotifications, markNoificationAsRead } from "@/helpers/dbCalls";
+import { toast } from "react-toastify";
 
 const NotificationComponent = ({
   file,
   name,
   email,
   docId,
+  id,
+  setCount,
 }: {
   file: string;
   name: string;
   email: string;
   docId: string;
+  id: number;
+  setCount: React.Dispatch<React.SetStateAction<number>>;
 }) => {
   return (
     <li className="flex items-center justify-between">
       <a>
-        {name} with {email} has requested to generate share link for doc {file}{" "}
+        <b>{name}</b> with <b>{email}</b> has requested to generate share link
+        for doc <b>{file}</b>{" "}
       </a>{" "}
-      <span className="btn btn-neutral hover:bg-success hover:text-base-300 btn-sm">
+      <span
+        className="btn btn-neutral hover:bg-success hover:text-base-300 btn-sm"
+        onClick={async () => {
+          await markNoificationAsRead(id);
+          // await toast.promise(promis, {
+          //   pending: "Loading",
+          //   success: "Success",
+          //   error: "Error occurred",
+          // });
+          setCount((prev) => prev + 1);
+        }}
+      >
         <ImCheckmark />
       </span>
     </li>
@@ -40,6 +57,7 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [count, setCount] = useState(0);
   const { data: session, status } = useSession({
     required: true,
     onUnauthenticated() {
@@ -48,6 +66,7 @@ export default function DashboardLayout({
   });
   const [notifications, setNotifications] = useState<
     {
+      id: number;
       doc: {
         id: string;
         name: string;
@@ -57,15 +76,14 @@ export default function DashboardLayout({
       senderEmail: string | null;
     }[]
   >([]);
-
   const getNotificationData = async () => {
     if (session?.user?.email)
       setNotifications(await getNotifications(session?.user?.email));
   };
 
   useEffect(() => {
-    getNotificationData();
-  }, []);
+    if (status === "authenticated") getNotificationData();
+  }, [status, count]);
 
   if (status === "loading") return <Loading />;
 
@@ -104,6 +122,8 @@ export default function DashboardLayout({
                           name={item.senderName}
                           email={item.senderEmail ?? ""}
                           docId={item.doc.id}
+                          id={item.id}
+                          setCount={setCount}
                           key={index}
                         />
                         {index !== notifications.length - 1 && (

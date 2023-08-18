@@ -44,7 +44,7 @@ export default async function ShareDocView({
             fileName: doc.fileName,
             fileType: doc.fileType,
             size: Number(doc.size),
-            expireAt: shareDoc.expireAt.valueOf(),
+            expireAt: new Date(shareDoc.expireAt).valueOf(),
           }}
         />
       ) : (
