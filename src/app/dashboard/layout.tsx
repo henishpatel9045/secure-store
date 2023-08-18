@@ -8,6 +8,31 @@ import Link from "next/link";
 import Loading from "@/components/Loading";
 import { generateAvatarText } from "@/helpers/helper";
 import { IoNotifications } from "react-icons/io5";
+import { ImCheckmark } from "react-icons/im";
+import { getNotifications } from "@/helpers/dbCalls";
+
+const NotificationComponent = ({
+  file,
+  name,
+  email,
+  docId,
+}: {
+  file: string;
+  name: string;
+  email: string;
+  docId: string;
+}) => {
+  return (
+    <li className="flex items-center justify-between">
+      <a>
+        {name} with {email} has requested to generate share link for doc {file}{" "}
+      </a>{" "}
+      <span className="btn btn-neutral hover:bg-success hover:text-base-300 btn-sm">
+        <ImCheckmark />
+      </span>
+    </li>
+  );
+};
 
 export default function DashboardLayout({
   children,
@@ -21,6 +46,26 @@ export default function DashboardLayout({
       redirect("/auth/login");
     },
   });
+  const [notifications, setNotifications] = useState<
+    {
+      doc: {
+        id: string;
+        name: string;
+      };
+      createdAt: Date;
+      senderName: string;
+      senderEmail: string | null;
+    }[]
+  >([]);
+
+  const getNotificationData = async () => {
+    if (session?.user?.email)
+      setNotifications(await getNotifications(session?.user?.email));
+  };
+
+  useEffect(() => {
+    getNotificationData();
+  }, []);
 
   if (status === "loading") return <Loading />;
 
@@ -39,23 +84,38 @@ export default function DashboardLayout({
           <div className="dropdown dropdown-end">
             <label tabIndex={0} className="btn btn-ghost btn-circle">
               <div className="indicator">
-                <span className="badge badge-xs indicator-item">8</span>
+                <span className="badge badge-xs indicator-item">
+                  {notifications.length}
+                </span>
                 <IoNotifications className="w-4 h-4" />
               </div>
             </label>
             <div
               tabIndex={0}
-              className="mt-3 z-[1] card card-compact dropdown-content w-52 bg-base-100 shadow"
+              className="mt-3 z-50 card card-compact dropdown-content xs:w-52 lg:w-64 bg-base-100 shadow"
             >
-              <div className="card-body">
-                <span className="font-bold text-lg">8 Items</span>
-                <span className="text-info">Subtotal: $999</span>
-                <div className="card-actions">
-                  <button className="btn btn-primary btn-block">
-                    View cart
-                  </button>
-                </div>
-              </div>
+              <ul className="p-2 bg-base-200 xs:w-56 lg:w-64 rounded-box max-h-60 overflow-auto">
+                {notifications.length !== 0 ? (
+                  notifications?.map((item, index) => {
+                    return (
+                      <>
+                        <NotificationComponent
+                          file={item.doc.name}
+                          name={item.senderName}
+                          email={item.senderEmail ?? ""}
+                          docId={item.doc.id}
+                          key={index}
+                        />
+                        {index !== notifications.length - 1 && (
+                          <span className="divider" />
+                        )}
+                      </>
+                    );
+                  })
+                ) : (
+                  <span>No Notifications</span>
+                )}
+              </ul>
             </div>
           </div>
           <div className="dropdown dropdown-end">

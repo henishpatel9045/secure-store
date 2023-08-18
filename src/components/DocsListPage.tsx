@@ -22,7 +22,7 @@ export default function DocsListPage({
       React.SetStateAction<{
         id: string;
         link: string;
-        expiredAt: number;
+        expiredAt: Date;
         accessedFor: number;
       } | null>
     >;

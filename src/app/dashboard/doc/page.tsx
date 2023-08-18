@@ -9,6 +9,7 @@ import BtnLoading from "@/components/BtnLoading";
 import DocsListPage from "@/components/DocsListPage";
 import DialogContainer from "@/components/DialogContainer";
 import { toast } from "react-toastify";
+import { DATE_ISO_ADJUST } from "@/config/site";
 
 export default function Page() {
   const [modelDocId, setModelDocId] = useState<string | null>(null);
@@ -145,8 +146,12 @@ export default function Page() {
                     name="expiresAt"
                     className="col-span-2 max-w-full badge badge-ghost p-3 h-fit"
                     required
-                    min={new Date().toISOString().slice(0, 16)}
-                    max={new Date(Date.now() + 100 * 24 * 60 * 60 * 1000)
+                    min={new Date(Date.now() + DATE_ISO_ADJUST())
+                      .toISOString()
+                      .slice(0, 16)}
+                    max={new Date(
+                      Date.now() + DATE_ISO_ADJUST() + 100 * 24 * 60 * 60 * 1000
+                    )
                       .toISOString()
                       .slice(0, 16)}
                   />

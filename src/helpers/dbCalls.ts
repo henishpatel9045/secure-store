@@ -1,6 +1,7 @@
 "use server";
 
 import {
+  DATE_ISO_ADJUST,
   SHARE_LINK_PREFIX,
   TABLE_PAGE_SIZE,
   UPLOAD_PATH_PREFIX,
@@ -151,7 +152,7 @@ const getSharedDocData = async (email: string, page: number) => {
           id: item.id,
           docName: doc.name,
           createdAt: item.createdAt.toDateString(),
-          expiredAt: item.expireAt.valueOf(),
+          expiredAt: item.expireAt,
           accessedFor: item.accessed,
         };
       });
@@ -162,7 +163,7 @@ const getSharedDocData = async (email: string, page: number) => {
       id: string;
       docName: string;
       createdAt: string;
-      expiredAt: number;
+      expiredAt: Date;
       accessedFor: number;
     }>()
   );
@@ -196,7 +197,7 @@ const checkActiveDocShare = async (docId: string) => {
       exists: true,
       doc: {
         id: doc.id,
-        expiredAt: doc.expireAt.valueOf(),
+        expiredAt: doc.expireAt,
         link: SHARE_LINK_PREFIX + doc.id,
         accessedFor: doc.accessed,
       },
@@ -211,6 +212,8 @@ const generateShare = async (formData: FormData) => {
   const docId = formData.get("docId") as string;
   const expireAt = new Date(Date.parse(formData.get("expiresAt") as string));
 
+  console.log("From FORM:  ", expireAt.toISOString());
+
   const shareDoc = await prisma.sharableDocs.create({
     data: {
       docId: docId,
@@ -218,9 +221,11 @@ const generateShare = async (formData: FormData) => {
     },
   });
 
+  console.log(shareDoc.expireAt);
+  console.log();
   return {
     id: shareDoc.id,
-    expiredAt: shareDoc.expireAt.valueOf(),
+    expiredAt: shareDoc.expireAt,
     link: SHARE_LINK_PREFIX + shareDoc.id,
     accessedFor: shareDoc.accessed,
   };
@@ -265,6 +270,33 @@ const deleteEncryptedDoc = async (id: string) => {
   }
 };
 
+const getNotifications = async (email: string) => {
+  const data = await prisma.docShareRequest.findMany({
+    where: {
+      doc: {
+        userEmail: email,
+      },
+      visited: false,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+    select: {
+      senderName: true,
+      senderEmail: true,
+      createdAt: true,
+      doc: {
+        select: {
+          name: true,
+          id: true,
+        },
+      },
+    },
+  });
+
+  return data;
+};
+
 export {
   getDocsData,
   // getDocData,
@@ -277,4 +309,5 @@ export {
   deleteShareDoc,
   createDocShareRequest,
   deleteEncryptedDoc,
+  getNotifications,
 };

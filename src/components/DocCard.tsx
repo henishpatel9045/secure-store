@@ -31,7 +31,7 @@ export default function DocCard({
     React.SetStateAction<{
       id: string;
       link: string;
-      expiredAt: number;
+      expiredAt: Date;
       accessedFor: number;
     } | null>
   >;

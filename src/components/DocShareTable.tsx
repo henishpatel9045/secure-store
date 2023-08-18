@@ -15,7 +15,7 @@ export default function DocShareTable() {
         id: string;
         docName: string;
         createdAt: string;
-        expiredAt: number;
+        expiredAt: Date;
         accessedFor: number;
       }[]
     | undefined

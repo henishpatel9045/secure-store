@@ -22,7 +22,7 @@ export default function Table({
         id: string;
         docName: string;
         createdAt: string;
-        expiredAt: number;
+        expiredAt: Date;
         accessedFor: number;
       }[]
     | undefined
@@ -59,7 +59,8 @@ export default function Table({
                   <td>{item.createdAt}</td>
                   <td>{item.accessedFor}</td>
                   <td>
-                    {item.expiredAt > Date.now() ? (
+                    {new Date(item.expiredAt.valueOf()).valueOf() >
+                    Date.now() ? (
                       <span className="badge badge-success badge-outline">
                         Active
                       </span>
