@@ -17,7 +17,7 @@ export default function Page() {
   const [shareDocData, setShareDocData] = useState<{
     id: string;
     link: string;
-    expiredAt: number;
+    expiredAt: Date;
     accessedFor: number;
   } | null>(null);
   const [loading, setLoading] = useState(false);
@@ -77,7 +77,13 @@ export default function Page() {
                 </p>
                 <p className="col-span-3">
                   <Timer
-                    time={((shareDocData?.expiredAt ?? 0) - Date.now()) / 1000}
+                    time={
+                      (new Date(
+                        shareDocData?.expiredAt.valueOf() ?? 0
+                      ).valueOf() -
+                        Date.now()) /
+                      1000
+                    }
                   />
                 </p>
                 <button
