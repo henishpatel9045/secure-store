@@ -6,7 +6,7 @@ const WHATSAPP_URL =
   "https://wa.me/917990577979?text=Hi%20there.%20Found%20about%20you%20from%20SecureStore.";
 const LINKEDIN_URL = "https://www.linkedin.com/in/henish-patel-71428b202";
 const env = process.env.ENVIRONMENT ?? "production";
-const DATE_ISO_ADJUST = env === "development" ? 0 : -5 * 60 * 60 * 1000;
+const DATE_ISO_ADJUST = env === "development" ? 0 : -5.5 * 60 * 60 * 1000;
 
 export {
   TABLE_PAGE_SIZE,
